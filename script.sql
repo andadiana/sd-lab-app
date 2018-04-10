@@ -42,14 +42,18 @@ CREATE TABLE assignment
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL,
     deadline DATE NOT NULL,
-    description TEXT NOT NULL
+    description TEXT NOT NULL,
+    lab_id INT NOT NULL,
+    CONSTRAINT lab_id FOREIGN KEY (lab_id) REFERENCES laboratory (id);
 );
 
-CREATE TABLE submissions
+CREATE TABLE submission
 (
     student_id INT NOT NULL,
     assignment_id INT NOT NULL,
     date DATE NOT NULL,
     description TEXT NOT NULL,
-    grade INT
+    grade INT,
+    CONSTRAINT student_fk FOREIGN KEY (student_id) REFERENCES student (id),
+    CONSTRAINT assignment_fk FOREIGN KEY (assignment_id) REFERENCES assignment (id)
 );

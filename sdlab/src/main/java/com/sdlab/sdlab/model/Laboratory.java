@@ -3,6 +3,7 @@ package com.sdlab.sdlab.model;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.Set;
 
 @Entity
 public class Laboratory {
@@ -25,6 +26,9 @@ public class Laboratory {
 
     @Column(name = "description", nullable = false)
     private String description;
+
+    @OneToMany(mappedBy="laboratory")
+    private Set<Assignment> assignments;
 
 
     public int getId() {
