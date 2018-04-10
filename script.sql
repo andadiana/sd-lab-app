@@ -24,7 +24,8 @@ CREATE TABLE student
     email VARCHAR(50) NOT NULL,
     password CHAR(128) NOT NULL,
     `group` CHAR(5) NOT NULL,
-    hobby VARCHAR(30)
+    hobby VARCHAR(30),
+    password_set BIT NOT NULL
 );
 CREATE UNIQUE INDEX student_email_uindex ON student (email);
 

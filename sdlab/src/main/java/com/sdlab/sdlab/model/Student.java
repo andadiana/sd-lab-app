@@ -24,6 +24,9 @@ public class Student {
     @Column(name = "hobby")
     private String hobby;
 
+    @Column(name = "password_set")
+    private boolean passwordSet;
+
     public int getId() {
         return id;
     }
@@ -70,5 +73,13 @@ public class Student {
 
     public void setHobby(String hobby) {
         this.hobby = hobby;
+    }
+
+    public boolean isPasswordSet() {
+        return passwordSet;
+    }
+
+    public void setPasswordSet(boolean passwordSet) {
+        this.passwordSet = passwordSet;
     }
 }
