@@ -1,20 +1,20 @@
 package com.sdlab.sdlab.service;
 
-import com.sdlab.sdlab.model.Teacher;
-import com.sdlab.sdlab.repository.TeacherRepository;
+import com.sdlab.sdlab.model.User;
+import com.sdlab.sdlab.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class TeacherServiceImpl implements TeacherService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
-    private TeacherRepository teacherRepository;
+    private UserRepository teacherRepository;
 
-    public Teacher getTeacherById(int id) {
-        Optional<Teacher> res = teacherRepository.findById(id);
+    public User getById(int id) {
+        Optional<User> res = teacherRepository.findById(id);
         if (res.isPresent()) {
             return res.get();
         }

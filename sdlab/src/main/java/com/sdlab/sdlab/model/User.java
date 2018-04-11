@@ -3,10 +3,11 @@ package com.sdlab.sdlab.model;
 import javax.persistence.*;
 
 @Entity
-public class Teacher {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class User {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "name", nullable = false)
@@ -17,6 +18,10 @@ public class Teacher {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
 
     public int getId() {
         return id;
@@ -48,5 +53,13 @@ public class Teacher {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

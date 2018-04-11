@@ -8,26 +8,26 @@ CREATE TABLE laboratory
     lab_nr INT NOT NULL
 );
 
-CREATE TABLE teacher
-(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL,
-    email VARCHAR(50) NOT NULL,
-    password CHAR(128) NOT NULL
-);
-CREATE UNIQUE INDEX teacher_email_uindex ON teacher (email);
-
-CREATE TABLE student
+CREATE TABLE user
 (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL,
     email VARCHAR(50) NOT NULL,
     password CHAR(128) NOT NULL,
-    `group` CHAR(5) NOT NULL,
-    hobby VARCHAR(30),
-    password_set BIT NOT NULL
+    role ENUM('ADMIN','STUDENT') NOT NULL
 );
-CREATE UNIQUE INDEX student_email_uindex ON student (email);
+CREATE UNIQUE INDEX user_email_uindex ON user (email);
+
+CREATE TABLE student
+(
+  id           INT AUTO_INCREMENT
+    PRIMARY KEY,
+  group_nr     CHAR(5)     NOT NULL,
+  hobby        VARCHAR(30) NULL,
+  password_set BIT         NOT NULL,
+  CONSTRAINT student_user_id_fk
+  FOREIGN KEY (id) REFERENCES user (id)
+)
 
 CREATE TABLE attendance
 (
