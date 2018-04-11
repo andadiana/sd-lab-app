@@ -17,17 +17,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder authenticationMgr) throws Exception {
         authenticationMgr.inMemoryAuthentication()
-                .withUser("admin").password("123").authorities("ROLE_ADMIN")
+                .withUser("admin").password("{noop}123").roles("ADMIN")
                 .and()
-                .withUser("student").password("123").authorities("ROLE_STUDENT");
+                .withUser("student").password("{noop}123").roles("STUDENT");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.authorizeRequests()
-                .antMatchers("/students").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
-                .antMatchers("/labs").access("hasRole('ROLE_STUDENT')");
+        http.httpBasic().and().authorizeRequests()
+                .antMatchers("/students").hasRole("ADMIN")
+                .antMatchers("/labs").hasAnyRole("ADMIN", "STUDENT");
 //                .and()
 //                .formLogin().loginPage("/loginPage")
 //                .defaultSuccessUrl("/homePage")
