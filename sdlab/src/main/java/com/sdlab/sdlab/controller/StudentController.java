@@ -31,54 +31,48 @@ public class StudentController {
     }
 
     @RequestMapping(method = GET, value = "/{studentId}")
-    public Student getStudentById(@PathVariable Integer studentId) {
+    public ResponseEntity getStudentById(@PathVariable Integer studentId) {
         Student student = studentService.getStudentById(studentId);
-        return student;
+        if (student == null) {
+            //student not found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(student);
     }
 
     @RequestMapping(method = POST)
-    public ResponseEntity<String> createStudent(@RequestBody Student student) {
-        //TODO check if lab is valid (add method in studentservice
-
-//        if (personService.isValid(person)) {
-//            personRepository.persist(person);
-//            return ResponseEntity.status(HttpStatus.CREATED).build();
-//        }
-//        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
-        studentService.createStudent(student);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity createStudent(@RequestBody Student student) {
+        //TODO maybe find a diff method for exception handling?
+        //check if student already exists
+        Student student1 = studentService.getStudentByEmail(student.getEmail());
+        if (student1 != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student email already exists!");
+        }
+        if (studentService.isValid(student)) {
+            Student createdStudent = studentService.createStudent(student);
+            return ResponseEntity.status(HttpStatus.OK).body(createdStudent);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid student structure!");
     }
 
     @RequestMapping(method = PUT, value = "/{studentId}")
-    public ResponseEntity<String> updateStudent(@RequestBody Student student) {
-        //TODO check if lab is valid (add method in studentservice
-
-//        if (personService.isValid(person)) {
-//            personRepository.persist(person);
-//            return ResponseEntity.status(HttpStatus.CREATED).build();
-//        }
-//        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
-        studentService.updateStudent(student);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    public ResponseEntity updateStudent(@PathVariable Integer studentId, @RequestBody Student student) {
+        Student student1 = studentService.getStudentById(studentId);
+        if (student1 == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Student not found!");
+        }
+        if (studentService.isValid(student)) {
+            student.setId(studentId);
+            studentService.updateStudent(student);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid student structure!");
     }
 
     @RequestMapping(method = DELETE, value = "/{studentId}")
-    public ResponseEntity<String> deleteStudent(@PathVariable Integer studentId) {
+    public ResponseEntity deleteStudent(@PathVariable Integer studentId) {
 
-        // true -> can delete
-        // false -> cannot delete, f.e. is FK reference somewhere
-        boolean wasOk = studentService.deleteStudent(studentId);
-
-        //TODO do stuff if !ok
-//        if (!wasOk) {
-//            // will write to user which item couldn't be deleted
-//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//            model.addAttribute("item", item);
-//            return "items/error";
-//        }
-//
-//        return "redirect:/items";
-
+        studentService.deleteStudent(studentId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }

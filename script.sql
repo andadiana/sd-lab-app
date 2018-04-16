@@ -50,6 +50,7 @@ CREATE TABLE assignment
 
 CREATE TABLE submission
 (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     student_id INT NOT NULL,
     assignment_id INT NOT NULL,
     date DATE NOT NULL,

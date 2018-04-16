@@ -10,5 +10,7 @@ public interface StudentService {
     public Student getStudentById(int id);
     public Student createStudent(Student student);
     public Student updateStudent(Student student);
-    public boolean deleteStudent(int id);
+    public void deleteStudent(int id);
+    public boolean isValid(Student student);
+    public Student getStudentByEmail(String email);
 }
