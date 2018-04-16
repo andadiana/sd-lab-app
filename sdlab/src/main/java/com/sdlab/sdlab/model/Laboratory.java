@@ -2,6 +2,8 @@ package com.sdlab.sdlab.model;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -17,6 +19,7 @@ public class Laboratory {
     @Column(name = "lab_nr", nullable = false)
     private int labNumber;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "date", nullable = false)
     private Date date;
 
@@ -29,7 +32,7 @@ public class Laboratory {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @JsonBackReference
+    @JsonIgnore
     @OneToMany(mappedBy="laboratory")
     private Set<Assignment> assignments;
 
@@ -82,7 +85,9 @@ public class Laboratory {
         this.description = description;
     }
 
+    @JsonIgnore
     public Set<Assignment> getAssignments() { return assignments; }
 
+    @JsonIgnore
     public void setAssignments(Set<Assignment> assignments) { this.assignments = assignments; }
 }

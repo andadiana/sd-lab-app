@@ -32,54 +32,36 @@ public class LabController {
     }
 
     @RequestMapping(method = GET, value = "/{labId}")
-    public Laboratory getLaboratoryById(@PathVariable Integer labId) {
+    public ResponseEntity getLaboratoryById(@PathVariable Integer labId) {
         Laboratory lab = laboratoryService.getLabById(labId);
-        return lab;
+        if (lab == null) {
+            //lab not found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(lab);
     }
 
     @RequestMapping(method = POST)
-    public ResponseEntity<String> createLaboratory(@RequestBody Laboratory lab) {
-        //TODO check if lab is valid (add method in labservice
-
-//        if (personService.isValid(person)) {
-//            personRepository.persist(person);
-//            return ResponseEntity.status(HttpStatus.CREATED).build();
-//        }
-//        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
-        laboratoryService.createLaboratory(lab);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity createLaboratory(@RequestBody Laboratory lab) {
+        Laboratory createdLab = laboratoryService.createLaboratory(lab);
+        return ResponseEntity.status(HttpStatus.OK).body(createdLab);
     }
 
     @RequestMapping(method = PUT, value = "/{labId}")
-    public ResponseEntity<String> updateLaboratory(@RequestBody Laboratory lab) {
-        //TODO check if lab is valid (add method in labservice
-
-//        if (personService.isValid(person)) {
-//            personRepository.persist(person);
-//            return ResponseEntity.status(HttpStatus.CREATED).build();
-//        }
-//        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
+    public ResponseEntity updateLaboratory(@PathVariable Integer labId, @RequestBody Laboratory lab) {
+        Laboratory lab1 = laboratoryService.getLabById(labId);
+        if (lab1 == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lab not found!");
+        }
+        lab.setId(labId);
         laboratoryService.updateLaboratory(lab);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @RequestMapping(method = DELETE, value = "/{labId}")
-    public ResponseEntity<String> deleteLaboratory(@PathVariable Integer labId) {
+    public ResponseEntity deleteLaboratory(@PathVariable Integer labId) {
 
-        // true -> can delete
-        // false -> cannot delete, f.e. is FK reference somewhere
-        boolean wasOk = laboratoryService.deleteLaboratory(labId);
-
-        //TODO do stuff if !ok
-//        if (!wasOk) {
-//            // will write to user which item couldn't be deleted
-//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//            model.addAttribute("item", item);
-//            return "items/error";
-//        }
-//
-//        return "redirect:/items";
-
+        laboratoryService.deleteLaboratory(labId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
