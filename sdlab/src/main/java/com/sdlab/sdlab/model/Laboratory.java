@@ -1,6 +1,8 @@
 package com.sdlab.sdlab.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.Set;
@@ -27,6 +29,7 @@ public class Laboratory {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @JsonBackReference
     @OneToMany(mappedBy="laboratory")
     private Set<Assignment> assignments;
 
@@ -78,4 +81,8 @@ public class Laboratory {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Set<Assignment> getAssignments() { return assignments; }
+
+    public void setAssignments(Set<Assignment> assignments) { this.assignments = assignments; }
 }

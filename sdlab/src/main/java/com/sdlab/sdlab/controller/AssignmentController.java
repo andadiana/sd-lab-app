@@ -33,6 +33,8 @@ public class AssignmentController {
     @RequestMapping(method = GET, value = "/{assignmentId}")
     public Assignment getAssignmentById(@PathVariable Integer assignmentId) {
         Assignment assignment = assignmentService.getAssignmentById(assignmentId);
+
+        //TODO should return resource not found if there is no assignment with that id
         return assignment;
     }
 
@@ -45,6 +47,7 @@ public class AssignmentController {
 //            return ResponseEntity.status(HttpStatus.CREATED).build();
 //        }
 //        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
+        //TODO create lab for assignment
         assignmentService.createAssignment(assignment);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

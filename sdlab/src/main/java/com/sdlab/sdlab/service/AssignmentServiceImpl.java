@@ -38,7 +38,7 @@ public class AssignmentServiceImpl implements AssignmentService {
         assignmentToUpdate.setName(assignment.getName());
         assignmentToUpdate.setDeadline(assignment.getDeadline());
         assignmentToUpdate.setDescription(assignment.getDescription());
-        assignmentToUpdate.setLaboratory(assignment.getLaboratory());
+        //assignmentToUpdate.setLaboratory(assignment.getLaboratory());
         return assignmentRepository.save(assignmentToUpdate);
     }
 

@@ -22,7 +22,6 @@ public class LabController {
     @Autowired
     private LaboratoryService laboratoryService;
 
-    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(method = GET)
     public List<Laboratory> getAllLaboratories() {
         List<Laboratory> labs = laboratoryService.getAllLaboratories();

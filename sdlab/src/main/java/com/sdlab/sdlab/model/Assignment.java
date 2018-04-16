@@ -1,5 +1,7 @@
 package com.sdlab.sdlab.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.sql.Date;
 
@@ -19,6 +21,7 @@ public class Assignment {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name="lab_id")
     private Laboratory laboratory;
@@ -55,11 +58,7 @@ public class Assignment {
         this.description = description;
     }
 
-    public Laboratory getLaboratory() {
-        return laboratory;
-    }
+    public Laboratory getLaboratory() {return laboratory;}
 
-    public void setLaboratory(Laboratory laboratory) {
-        this.laboratory = laboratory;
-    }
+    public void setLaboratory(Laboratory laboratory) {this.laboratory = laboratory;}
 }

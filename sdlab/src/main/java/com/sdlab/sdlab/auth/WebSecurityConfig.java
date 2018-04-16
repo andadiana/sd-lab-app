@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -25,9 +26,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.httpBasic().and().authorizeRequests()
-                .antMatchers("/students").hasRole("ADMIN")
-                .antMatchers("/labs").hasAnyRole("ADMIN", "STUDENT");
+        http.csrf().disable().httpBasic().and().authorizeRequests()
+                .antMatchers("/students/**").permitAll()
+                .antMatchers("/labs/**").permitAll()
+                .antMatchers("/assignments/**").permitAll()
+                ;
+                //.antMatchers("/students").hasRole("ADMIN")
+                //.antMatchers("/labs").hasAnyRole("ADMIN", "STUDENT");
 //                .and()
 //                .formLogin().loginPage("/loginPage")
 //                .defaultSuccessUrl("/homePage")
@@ -38,3 +43,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 }
+

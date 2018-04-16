@@ -1,5 +1,6 @@
 package com.sdlab.sdlab.service;
 
+import com.sdlab.sdlab.model.Role;
 import com.sdlab.sdlab.model.Student;
 import com.sdlab.sdlab.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public Student createStudent(Student student) {
+        student.setRole(Role.STUDENT);
         System.out.println("Student service create: " + student);
         return studentRepository.save(student);
     }
