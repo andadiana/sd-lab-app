@@ -1,10 +1,13 @@
 package com.sdlab.sdlab.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.Set;
 
 @Entity
 public class Assignment {
@@ -26,6 +29,11 @@ public class Assignment {
     @ManyToOne
     @JoinColumn(name="lab_id")
     private Laboratory laboratory;
+
+    @JsonIgnore
+    @JsonBackReference
+    @OneToMany(mappedBy="assignment")
+    private Set<Submission> submissions;
 
     public int getId() {
         return id;
@@ -62,4 +70,14 @@ public class Assignment {
     public Laboratory getLaboratory() {return laboratory;}
 
     public void setLaboratory(Laboratory laboratory) {this.laboratory = laboratory;}
+
+    @JsonIgnore
+    public Set<Submission> getSubmissions() {
+        return submissions;
+    }
+
+    @JsonIgnore
+    public void setSubmissions(Set<Submission> submissions) {
+        this.submissions = submissions;
+    }
 }

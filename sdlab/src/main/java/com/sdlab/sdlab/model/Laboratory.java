@@ -42,6 +42,11 @@ public class Laboratory {
     @OneToMany(mappedBy="laboratory")
     private Set<Attendance> attendance;
 
+    @JsonIgnore
+    @JsonBackReference
+    @OneToMany(mappedBy="laboratory")
+    private Set<Submission> submissions;
+
 
     public int getId() {
         return id;

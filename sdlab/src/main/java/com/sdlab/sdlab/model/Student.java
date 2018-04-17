@@ -24,6 +24,11 @@ public class Student extends User {
     @JsonIgnore
     private Set<Attendance> attendance;
 
+    @JsonIgnore
+    @JsonBackReference
+    @OneToMany(mappedBy="student")
+    private Set<Submission> submissions;
+
     public String getGroup() {
         return group;
     }
@@ -56,5 +61,15 @@ public class Student extends User {
     @JsonIgnore
     public void setAttendance(Set<Attendance> attendance) {
         this.attendance = attendance;
+    }
+
+    @JsonIgnore
+    public Set<Submission> getSubmissions() {
+        return submissions;
+    }
+
+    @JsonIgnore
+    public void setSubmissions(Set<Submission> submissions) {
+        this.submissions = submissions;
     }
 }
