@@ -1,6 +1,8 @@
 package com.sdlab.sdlab.controller;
 
+import com.sdlab.sdlab.model.Assignment;
 import com.sdlab.sdlab.model.Submission;
+import com.sdlab.sdlab.service.AssignmentService;
 import com.sdlab.sdlab.service.SubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,9 @@ public class SubmissionController {
 
     @Autowired
     private SubmissionService submissionService;
+
+    @Autowired
+    private AssignmentService assignmentService;
 
     @RequestMapping(method = GET)
     public List<Submission> getAllSubmissions() {
@@ -52,6 +57,9 @@ public class SubmissionController {
         if (submission1 == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Submission not found!");
         }
+        if (!submission1.getDate().equals(submission.getDate())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Date field cannot be changed!");
+        }
         submission.setId(submissionId);
         submissionService.updateSubmission(submission);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
@@ -61,5 +69,15 @@ public class SubmissionController {
     public ResponseEntity deleteSubmission(@PathVariable Integer submissionId) {
         submissionService.deleteSubmission(submissionId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @RequestMapping(method = GET, value = "/assignments/{assignmentId}")
+    public ResponseEntity getGradesForAssignment(@PathVariable Integer assignmentId) {
+        Assignment assignment = assignmentService.getAssignmentById(assignmentId);
+        if (assignment == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Assignment not found!");
+        }
+        List<Submission> submissions = submissionService.getSubmissionsByAssignmmentId(assignmentId);
+        return ResponseEntity.status(HttpStatus.OK).body(submissions);
     }
 }

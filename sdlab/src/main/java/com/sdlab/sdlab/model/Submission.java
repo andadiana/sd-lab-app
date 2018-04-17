@@ -1,11 +1,14 @@
 package com.sdlab.sdlab.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Entity
+@DynamicUpdate
 public class Submission {
 
     @Id
@@ -13,7 +16,7 @@ public class Submission {
     private int id;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @Column(name = "date", nullable = false)
+    @Column(name = "date", nullable = false, updatable = false)
     private Date date;
 
     @Column(name = "description", nullable = false)
@@ -23,11 +26,11 @@ public class Submission {
     private int grade;
 
     @ManyToOne
-    @JoinColumn(name="student_id")
+    @JoinColumn(name="student_id", updatable = false)
     private Student student;
 
     @ManyToOne
-    @JoinColumn(name="assignment_id")
+    @JoinColumn(name="assignment_id", updatable = false)
     private Assignment assignment;
 
     public int getId() {
@@ -68,5 +71,18 @@ public class Submission {
 
     public void setAssignment(Assignment assignment) {
         this.assignment = assignment;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    @Override
+    public String toString() {
+        return date + " " + student + " " + assignment + " " + grade + " " + description;
     }
 }

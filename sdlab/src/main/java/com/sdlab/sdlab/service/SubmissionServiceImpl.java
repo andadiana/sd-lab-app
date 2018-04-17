@@ -38,7 +38,23 @@ public class SubmissionServiceImpl implements SubmissionService{
 
     @Override
     public Submission updateSubmission(Submission submission) {
-        return submissionRepository.save(submission);
+        Submission submissionToUpdate = submissionRepository.getOne(submission.getId());
+        if (submission.getAssignment() != null) {
+            submissionToUpdate.setAssignment(submission.getAssignment());
+        }
+        if (submission.getDate() != null) {
+            submissionToUpdate.setDate(submission.getDate());
+        }
+        if (submission.getDescription() != null) {
+            submissionToUpdate.setDescription(submission.getDescription());
+        }
+        if (submission.getGrade() != 0) {
+            submissionToUpdate.setGrade(submission.getGrade());
+        }
+        if (submission.getStudent() != null) {
+            submissionToUpdate.setStudent(submission.getStudent());
+        }
+        return submissionRepository.save(submissionToUpdate);
     }
 
     @Override
@@ -47,5 +63,10 @@ public class SubmissionServiceImpl implements SubmissionService{
         if (res.isPresent()) {
             submissionRepository.deleteById(id);
         }
+    }
+
+    @Override
+    public List<Submission> getSubmissionsByAssignmmentId(int assignmentId) {
+        return submissionRepository.getSubmissionsByAssignmentId(assignmentId);
     }
 }

@@ -39,7 +39,20 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     @Override
     public Assignment updateAssignment(Assignment assignment) {
-        return assignmentRepository.save(assignment);
+        Assignment assignmentToUpdate = assignmentRepository.getOne(assignment.getId());
+        if (assignment.getName() != null) {
+            assignmentToUpdate.setName(assignment.getName());
+        }
+        if (assignment.getDeadline() != null) {
+            assignmentToUpdate.setDeadline(assignment.getDeadline());
+        }
+        if (assignment.getDescription() != null) {
+            assignmentToUpdate.setDescription(assignment.getDescription());
+        }
+        if (assignment.getLaboratory() != null) {
+            assignmentToUpdate.setLaboratory(assignment.getLaboratory());
+        }
+        return assignmentRepository.save(assignmentToUpdate);
     }
 
     @Override
