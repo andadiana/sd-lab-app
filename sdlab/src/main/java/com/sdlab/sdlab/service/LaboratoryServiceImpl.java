@@ -39,23 +39,7 @@ public class LaboratoryServiceImpl implements LaboratoryService {
 
     @Override
     public Laboratory updateLaboratory(Laboratory lab) {
-        Laboratory labToUpdate = laboratoryRepository.getOne(lab.getId());
-        if (lab.getDate() != null) {
-            labToUpdate.setDate(lab.getDate());
-        }
-        if (lab.getTitle() != null) {
-            labToUpdate.setTitle(lab.getTitle());
-        }
-        if (lab.getCurricula() != null) {
-            labToUpdate.setCurricula(lab.getCurricula());
-        }
-        if (lab.getDescription() != null) {
-            labToUpdate.setDescription(lab.getDescription());
-        }
-        if (lab.getLabNumber() != 0) {
-            labToUpdate.setLabNumber(lab.getLabNumber());
-        }
-        return laboratoryRepository.save(labToUpdate);
+        return laboratoryRepository.save(lab);
     }
 
     @Override

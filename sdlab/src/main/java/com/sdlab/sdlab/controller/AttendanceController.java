@@ -44,7 +44,8 @@ public class AttendanceController {
     @RequestMapping(method = POST)
     public ResponseEntity createAttendance(@RequestBody Attendance attendance) {
         Attendance createdAttendance = attendanceService.createAttendance(attendance);
-        return ResponseEntity.status(HttpStatus.OK).body(createdAttendance);
+//        return ResponseEntity.status(HttpStatus.OK).body(createdAttendance);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @RequestMapping(method = PUT, value = "/{attendanceId}")

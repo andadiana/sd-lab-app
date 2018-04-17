@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,13 +31,13 @@ public class LabController {
     }
 
     @RequestMapping(method = POST)
-    public ResponseEntity createLaboratory(@RequestBody Laboratory lab) {
+    public ResponseEntity createLaboratory(@Validated @RequestBody Laboratory lab) {
         Laboratory createdLab = laboratoryService.createLaboratory(lab);
         return ResponseEntity.status(HttpStatus.OK).body(createdLab);
     }
 
     @RequestMapping(method = PUT, value = "/{labId}")
-    public ResponseEntity updateLaboratory(@PathVariable Integer labId, @RequestBody Laboratory lab) {
+    public ResponseEntity updateLaboratory(@PathVariable Integer labId, @Validated @RequestBody Laboratory lab) {
         Laboratory lab1 = laboratoryService.getLabById(labId);
         if (lab1 == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lab not found!");

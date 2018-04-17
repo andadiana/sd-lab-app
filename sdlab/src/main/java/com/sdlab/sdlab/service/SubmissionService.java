@@ -12,4 +12,6 @@ public interface SubmissionService {
     public Submission updateSubmission(Submission submission);
     public void deleteSubmission(int id);
     public List<Submission> getSubmissionsByAssignmmentId(int assignmentId);
+    public boolean submissionExists(int studentId, int assignmentId);
+    public boolean validSubmission(Submission submission);
 }

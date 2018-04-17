@@ -1,8 +1,10 @@
 package com.sdlab.sdlab.controller;
 
 import com.sdlab.sdlab.model.Assignment;
+import com.sdlab.sdlab.model.Student;
 import com.sdlab.sdlab.model.Submission;
 import com.sdlab.sdlab.service.AssignmentService;
+import com.sdlab.sdlab.service.StudentService;
 import com.sdlab.sdlab.service.SubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,9 @@ public class SubmissionController {
     @Autowired
     private AssignmentService assignmentService;
 
+    @Autowired
+    private StudentService studentService;
+
     @RequestMapping(method = GET)
     public List<Submission> getAllSubmissions() {
         List<Submission> submissions = submissionService.getAllSubmissions();
@@ -47,8 +52,23 @@ public class SubmissionController {
 
     @RequestMapping(method = POST)
     public ResponseEntity createSubmission(@RequestBody Submission submission) {
+        Student student = studentService.getStudentById(submission.getStudent().getId());
+        if (student == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student does not exist!");
+        }
+        Assignment assignment = assignmentService.getAssignmentById(submission.getAssignment().getId());
+        if (assignment == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Assignment does not exist!");
+        }
+        if (submissionService.submissionExists(student.getId(), assignment.getId())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student has already submitted this assignment!");
+        }
         Submission createdSubmission = submissionService.createSubmission(submission);
-        return ResponseEntity.status(HttpStatus.OK).body(createdSubmission);
+//        return ResponseEntity.status(HttpStatus.OK).body(createdSubmission);
+        if (createdSubmission == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot create submission!");
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @RequestMapping(method = PUT, value = "/{submissionId}")
@@ -57,12 +77,26 @@ public class SubmissionController {
         if (submission1 == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Submission not found!");
         }
-        if (!submission1.getDate().equals(submission.getDate())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Date field cannot be changed!");
+        Student student = studentService.getStudentById(submission.getStudent().getId());
+        if (student == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student does not exist!");
         }
-        submission.setId(submissionId);
-        submissionService.updateSubmission(submission);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        Assignment assignment = assignmentService.getAssignmentById(submission.getAssignment().getId());
+        if (assignment == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Assignment does not exist!");
+        }
+        System.out.println(submission1);
+//        if (!submission1.getDate().equals(submission.getDate())) {
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body("Date field cannot be changed!");
+//        }
+        if(submissionService.validSubmission(submission)) {
+            submission.setId(submissionId);
+            submissionService.updateSubmission(submission);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid submission!");
+        }
     }
 
     @RequestMapping(method = DELETE, value = "/{submissionId}")

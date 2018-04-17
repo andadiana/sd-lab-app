@@ -43,14 +43,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public Attendance updateAttendance(Attendance attendance) {
-        Attendance attendanceToUpdate = attendanceRepository.getOne(attendance.getId());
-        if (attendance.getStudent() != null) {
-            attendanceToUpdate.setStudent(attendance.getStudent());
-        }
-        if (attendance.getLaboratory() != null) {
-            attendanceToUpdate.setLaboratory(attendance.getLaboratory());
-        }
-        return attendanceRepository.save(attendanceToUpdate);
+        return attendanceRepository.save(attendance);
     }
 
     @Override

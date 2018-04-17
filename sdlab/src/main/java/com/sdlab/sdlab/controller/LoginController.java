@@ -29,7 +29,6 @@ public class LoginController {
             Role role = userService.logIn(user.getEmail(), user.getPassword());
             HashMap<String, String> map = new HashMap<>();
             map.put("role", role.toString());
-            System.out.println(userService.isPasswordSet(user));
             if (userService.isPasswordSet(user)) {
                 map.put("passwordSet", "True");
             }

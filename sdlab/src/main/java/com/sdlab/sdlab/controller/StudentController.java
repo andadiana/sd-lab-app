@@ -70,6 +70,10 @@ public class StudentController {
         if (student1 == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Student not found!");
         }
+        student1 = studentService.getStudentByEmail(student.getEmail());
+        if (student1 != null && student1.getId() != studentId) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student email already exists!");
+        }
         if (studentService.isValid(student)) {
             student.setId(studentId);
             studentService.updateStudent(student);

@@ -48,7 +48,8 @@ public class AssignmentController {
     @RequestMapping(method = POST)
     public ResponseEntity createAssignment(@RequestBody Assignment assignment) {
         Assignment createdAssignment = assignmentService.createAssignment(assignment);
-        return ResponseEntity.status(HttpStatus.OK).body(createdAssignment);
+        //return ResponseEntity.status(HttpStatus.OK).body(createdAssignment);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @RequestMapping(method = PUT, value = "/{assignmentId}")

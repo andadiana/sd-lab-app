@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 import java.util.Set;
 
@@ -16,19 +17,24 @@ public class Laboratory {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
 
+    @NotNull
     @Column(name = "lab_nr", nullable = false)
     private int labNumber;
 
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "date", nullable = false)
     private Date date;
 
+    @NotNull
     @Column(name = "title", nullable = false, length = 50)
     private String title;
 
+    @NotNull
     @Column(name = "curricula", nullable = false, length = 200)
     private String curricula;
 
+    @NotNull
     @Column(name = "description", nullable = false)
     private String description;
 
