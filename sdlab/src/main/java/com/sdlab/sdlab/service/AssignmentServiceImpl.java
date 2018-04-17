@@ -14,10 +14,12 @@ public class AssignmentServiceImpl implements AssignmentService {
     @Autowired
     private AssignmentRepository assignmentRepository;
 
+    @Override
     public List<Assignment> getAllAssignments() {
         return assignmentRepository.findAll();
     }
 
+    @Override
     public Assignment getAssignmentById(int id) {
         Optional<Assignment> res = assignmentRepository.findById(id);
         if (res.isPresent()) {
@@ -28,24 +30,23 @@ public class AssignmentServiceImpl implements AssignmentService {
         }
     }
 
+    @Override
     public Assignment createAssignment(Assignment assignment) {
         System.out.println("Assignment service create: " + assignment);
+        assignment.setId(0);
         return assignmentRepository.save(assignment);
     }
 
+    @Override
     public Assignment updateAssignment(Assignment assignment) {
-        Assignment assignmentToUpdate = assignmentRepository.getOne(assignment.getId());
-        assignmentToUpdate.setName(assignment.getName());
-        assignmentToUpdate.setDeadline(assignment.getDeadline());
-        assignmentToUpdate.setDescription(assignment.getDescription());
-        //assignmentToUpdate.setLaboratory(assignment.getLaboratory());
-        return assignmentRepository.save(assignmentToUpdate);
+        return assignmentRepository.save(assignment);
     }
 
-    public boolean deleteAssignment(int id) {
-        Optional<Assignment> assignmentToDelete = assignmentRepository.findById(id);
-        //TODO check if assignment exists
-        assignmentRepository.delete(assignmentToDelete.get());
-        return true;
+    @Override
+    public void deleteAssignment(int id) {
+        Optional<Assignment> res = assignmentRepository.findById(id);
+        if (res.isPresent()) {
+            assignmentRepository.deleteById(id);
+        }
     }
 }

@@ -31,57 +31,35 @@ public class AssignmentController {
     }
 
     @RequestMapping(method = GET, value = "/{assignmentId}")
-    public Assignment getAssignmentById(@PathVariable Integer assignmentId) {
+    public ResponseEntity getAssignmentById(@PathVariable Integer assignmentId) {
         Assignment assignment = assignmentService.getAssignmentById(assignmentId);
-
-        //TODO should return resource not found if there is no assignment with that id
-        return assignment;
+        if (assignment == null) {
+            //assignment not found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(assignment);
     }
 
     @RequestMapping(method = POST)
-    public ResponseEntity<String> createAssignment(@RequestBody Assignment assignment) {
-        //TODO check if lab is valid (add method in studentservice
-
-//        if (personService.isValid(person)) {
-//            personRepository.persist(person);
-//            return ResponseEntity.status(HttpStatus.CREATED).build();
-//        }
-//        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
-        //TODO create lab for assignment
-        assignmentService.createAssignment(assignment);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity createAssignment(@RequestBody Assignment assignment) {
+        Assignment createdAssignment = assignmentService.createAssignment(assignment);
+        return ResponseEntity.status(HttpStatus.OK).body(createdAssignment);
     }
 
     @RequestMapping(method = PUT, value = "/{assignmentId}")
-    public ResponseEntity<String> updateAssignment(@RequestBody Assignment assignment) {
-        //TODO check if lab is valid (add method in studentservice
-
-//        if (personService.isValid(person)) {
-//            personRepository.persist(person);
-//            return ResponseEntity.status(HttpStatus.CREATED).build();
-//        }
-//        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
+    public ResponseEntity updateAssignment(@PathVariable Integer assignmentId, @RequestBody Assignment assignment) {
+        Assignment assignment1 = assignmentService.getAssignmentById(assignmentId);
+        if (assignment1 == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Assignment not found!");
+        }
+        assignment.setId(assignmentId);
         assignmentService.updateAssignment(assignment);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @RequestMapping(method = DELETE, value = "/{assignmentId}")
-    public ResponseEntity<String> deleteAssignment(@PathVariable Integer assignmentId) {
-
-        // true -> can delete
-        // false -> cannot delete, f.e. is FK reference somewhere
-        boolean wasOk = assignmentService.deleteAssignment(assignmentId);
-
-        //TODO do stuff if !ok
-//        if (!wasOk) {
-//            // will write to user which item couldn't be deleted
-//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//            model.addAttribute("item", item);
-//            return "items/error";
-//        }
-//
-//        return "redirect:/items";
-
+    public ResponseEntity deleteAssignment(@PathVariable Integer assignmentId) {
+        assignmentService.deleteAssignment(assignmentId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }

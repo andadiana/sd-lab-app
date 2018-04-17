@@ -10,5 +10,5 @@ public interface AssignmentService {
     public Assignment getAssignmentById(int id);
     public Assignment createAssignment(Assignment assignment);
     public Assignment updateAssignment(Assignment assignment);
-    public boolean deleteAssignment(int id);
+    public void deleteAssignment(int id);
 }

@@ -1,6 +1,7 @@
 package com.sdlab.sdlab.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -15,13 +16,13 @@ public class Assignment {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "deadline", nullable = false)
     private Date deadline;
 
     @Column(name = "description", nullable = false)
     private String description;
 
-    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name="lab_id")
     private Laboratory laboratory;

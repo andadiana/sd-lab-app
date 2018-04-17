@@ -1,6 +1,5 @@
 package com.sdlab.sdlab.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 
