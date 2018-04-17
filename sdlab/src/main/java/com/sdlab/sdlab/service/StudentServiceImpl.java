@@ -38,6 +38,7 @@ public class StudentServiceImpl implements StudentService {
     public Student createStudent(Student student) {
         student.setRole(Role.STUDENT);
         student.setPasswordSet(false);
+        student.setId(0);
         System.out.println("Student service create: " + student);
         return studentRepository.save(student);
     }

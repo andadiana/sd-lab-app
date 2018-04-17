@@ -33,8 +33,14 @@ public class Laboratory {
     private String description;
 
     @JsonIgnore
+    @JsonBackReference
     @OneToMany(mappedBy="laboratory")
     private Set<Assignment> assignments;
+
+    @JsonIgnore
+    @JsonBackReference
+    @OneToMany(mappedBy="laboratory")
+    private Set<Attendance> attendance;
 
 
     public int getId() {
@@ -90,4 +96,14 @@ public class Laboratory {
 
     @JsonIgnore
     public void setAssignments(Set<Assignment> assignments) { this.assignments = assignments; }
+
+    @JsonIgnore
+    public Set<Attendance> getAttendance() {
+        return attendance;
+    }
+
+    @JsonIgnore
+    public void setAttendance(Set<Attendance> attendance) {
+        this.attendance = attendance;
+    }
 }

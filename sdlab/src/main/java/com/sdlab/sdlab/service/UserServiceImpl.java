@@ -11,10 +11,10 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserRepository teacherRepository;
+    private UserRepository userRepository;
 
     public User getById(int id) {
-        Optional<User> res = teacherRepository.findById(id);
+        Optional<User> res = userRepository.findById(id);
         if (res.isPresent()) {
             return res.get();
         }

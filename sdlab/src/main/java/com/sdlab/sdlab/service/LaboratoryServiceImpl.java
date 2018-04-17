@@ -33,6 +33,7 @@ public class LaboratoryServiceImpl implements LaboratoryService {
     @Override
     public Laboratory createLaboratory(Laboratory lab) {
         System.out.println("Lab service create: " + lab);
+        lab.setId(0);
         return laboratoryRepository.save(lab);
     }
 
