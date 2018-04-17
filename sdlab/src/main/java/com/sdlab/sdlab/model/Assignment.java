@@ -33,7 +33,7 @@ public class Assignment {
 
     @JsonIgnore
     @JsonBackReference
-    @OneToMany(mappedBy="assignment")
+    @OneToMany(mappedBy="assignment", cascade = CascadeType.ALL)
     private Set<Submission> submissions;
 
     public int getId() {

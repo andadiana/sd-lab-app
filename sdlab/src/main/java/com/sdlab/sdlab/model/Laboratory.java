@@ -40,12 +40,12 @@ public class Laboratory {
 
     @JsonIgnore
     @JsonBackReference
-    @OneToMany(mappedBy="laboratory")
+    @OneToMany(mappedBy="laboratory", cascade = CascadeType.ALL)
     private Set<Assignment> assignments;
 
     @JsonIgnore
     @JsonBackReference
-    @OneToMany(mappedBy="laboratory")
+    @OneToMany(mappedBy="laboratory", cascade = CascadeType.ALL)
     private Set<Attendance> attendance;
 
 

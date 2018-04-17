@@ -18,14 +18,14 @@ public class Student extends User {
     @Column(name = "hobby")
     private String hobby;
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     @JsonBackReference
     @JsonIgnore
     private Set<Attendance> attendance;
 
     @JsonIgnore
     @JsonBackReference
-    @OneToMany(mappedBy="student")
+    @OneToMany(mappedBy="student", cascade = CascadeType.ALL)
     private Set<Submission> submissions;
 
     public String getGroup() {
