@@ -52,6 +52,9 @@ public class LaboratoryServiceImpl implements LaboratoryService {
         if (lab.getDescription() != null) {
             labToUpdate.setDescription(lab.getDescription());
         }
+        if (lab.getLabNumber() != 0) {
+            labToUpdate.setLabNumber(lab.getLabNumber());
+        }
         return laboratoryRepository.save(labToUpdate);
     }
 
@@ -63,4 +66,8 @@ public class LaboratoryServiceImpl implements LaboratoryService {
         }
     }
 
+    @Override
+    public List<Laboratory> getAllLaboratoriesByKeyword(String keyword) {
+        return laboratoryRepository.getAllByCurriculaContaining(keyword);
+    }
 }

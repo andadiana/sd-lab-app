@@ -5,6 +5,8 @@ import com.sdlab.sdlab.model.Student;
 import com.sdlab.sdlab.repository.StudentRepository;
 import com.sdlab.sdlab.util.EmailValidator;
 import com.sdlab.sdlab.util.GroupValidator;
+import com.sdlab.sdlab.util.PasswordEncrypter;
+import com.sdlab.sdlab.util.TokenGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,12 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private TokenGenerator tokenGenerator;
+
+    @Autowired
+    private PasswordEncrypter encrypter;
 
     @Override
     public List<Student> getAllStudents() {
@@ -39,6 +47,9 @@ public class StudentServiceImpl implements StudentService {
         student.setRole(Role.STUDENT);
         student.setPasswordSet(false);
         student.setId(0);
+        String token = generateToken();
+        System.out.println("\n\nToken is: \n\n" + token);
+        student.setPassword(encryptPassword(token));
         System.out.println("Student service create: " + student);
         return studentRepository.save(student);
     }
@@ -46,22 +57,17 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student updateStudent(Student student) {
         Student studentToUpdate = studentRepository.getOne(student.getId());
-        if (student.getGroup() != null) {
-            studentToUpdate.setGroup(student.getGroup());
-        }
-        if (student.getHobby() != null) {
-            studentToUpdate.setHobby(student.getHobby());
-        }
-        if (student.getEmail() != null) {
-            studentToUpdate.setEmail(student.getEmail());
-        }
-        if (student.getName() != null) {
-            studentToUpdate.setName(student.getName());
-        }
-        if (student.getPassword() != null) {
-            studentToUpdate.setPassword(student.getPassword());
-        }
-        return studentRepository.save(studentToUpdate);
+        student.setRole(Role.STUDENT);
+        student.setPasswordSet(studentToUpdate.isPasswordSet());
+        student.setPassword(studentToUpdate.getPassword());
+        return studentRepository.save(student);
+    }
+
+    @Override
+    public void updatePassword(Student student, String password) {
+        student.setPassword(encryptPassword(password));
+        student.setPasswordSet(true);
+        studentRepository.save(student);
     }
 
     @Override
@@ -86,9 +92,19 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public boolean isValid(Student student) {
         //check email and group format
-        if (EmailValidator.validate(student.getEmail()) && GroupValidator.validate(student.getGroup())) {
-            return true;
+        if (student.getEmail() != null && EmailValidator.validate(student.getEmail())) {
+            if (student.getGroup() != null && GroupValidator.validate(student.getGroup())){
+                return true;
+            }
         }
         return false;
+    }
+
+    private String generateToken() {
+        return tokenGenerator.generateToken();
+    }
+
+    private String encryptPassword(String password) {
+        return encrypter.encrypt(password);
     }
 }

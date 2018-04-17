@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
 public class Student extends User {
 
+    @NotNull
     @Column(name = "group_nr", nullable = false)
     private String group;
 

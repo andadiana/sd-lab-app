@@ -1,7 +1,9 @@
 package com.sdlab.sdlab.controller;
 
 import com.sdlab.sdlab.model.Assignment;
+import com.sdlab.sdlab.model.Laboratory;
 import com.sdlab.sdlab.service.AssignmentService;
+import com.sdlab.sdlab.service.LaboratoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,9 @@ public class AssignmentController {
 
     @Autowired
     private AssignmentService assignmentService;
+
+    @Autowired
+    private LaboratoryService laboratoryService;
 
     @RequestMapping(method = GET)
     public List<Assignment> getAllAssignments() {
@@ -61,5 +66,15 @@ public class AssignmentController {
     public ResponseEntity deleteAssignment(@PathVariable Integer assignmentId) {
         assignmentService.deleteAssignment(assignmentId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @RequestMapping(method = GET, value = "/labs/{labId}")
+    public ResponseEntity getAssignmentsForLab(@PathVariable Integer labId) {
+        Laboratory laboratory = laboratoryService.getLabById(labId);
+        if (laboratory == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Laboratory not found!");
+        }
+        List<Assignment> assignments = assignmentService.getAssignmentsByLaboratoryId(labId);
+        return ResponseEntity.status(HttpStatus.OK).body(assignments);
     }
 }

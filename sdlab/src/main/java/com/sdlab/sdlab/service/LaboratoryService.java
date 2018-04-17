@@ -11,5 +11,6 @@ public interface LaboratoryService {
     public Laboratory createLaboratory(Laboratory lab);
     public Laboratory updateLaboratory(Laboratory lab);
     public void deleteLaboratory(int id);
+    public List<Laboratory> getAllLaboratoriesByKeyword(String keyword);
 
 }

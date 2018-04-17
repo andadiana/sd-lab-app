@@ -1,7 +1,9 @@
 package com.sdlab.sdlab.service;
 
 import com.sdlab.sdlab.model.Assignment;
+import com.sdlab.sdlab.model.Laboratory;
 import com.sdlab.sdlab.repository.AssignmentRepository;
+import com.sdlab.sdlab.repository.LaboratoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,5 +63,10 @@ public class AssignmentServiceImpl implements AssignmentService {
         if (res.isPresent()) {
             assignmentRepository.deleteById(id);
         }
+    }
+
+    @Override
+    public List<Assignment> getAssignmentsByLaboratoryId(int labId) {
+        return assignmentRepository.getAssignmentsByLaboratoryId(labId);
     }
 }

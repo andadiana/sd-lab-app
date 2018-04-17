@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,15 +18,6 @@ public class LabController {
 
     @Autowired
     private LaboratoryService laboratoryService;
-
-    @RequestMapping(method = GET)
-    public List<Laboratory> getAllLaboratories() {
-        List<Laboratory> labs = laboratoryService.getAllLaboratories();
-        for (Laboratory lab: labs) {
-            System.out.println(lab);
-        }
-        return labs;
-    }
 
     @RequestMapping(method = GET, value = "/{labId}")
     public ResponseEntity getLaboratoryById(@PathVariable Integer labId) {
@@ -60,9 +48,20 @@ public class LabController {
 
     @RequestMapping(method = DELETE, value = "/{labId}")
     public ResponseEntity deleteLaboratory(@PathVariable Integer labId) {
-
         laboratoryService.deleteLaboratory(labId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @RequestMapping(method = GET)
+    public ResponseEntity getLabs(@RequestParam(required = false, value = "keyword") String keyword) {
+        if (keyword != null) {
+            List<Laboratory> labs = laboratoryService.getAllLaboratoriesByKeyword(keyword);
+            return ResponseEntity.status(HttpStatus.OK).body(labs);
+        }
+        else {
+            List<Laboratory> labs = laboratoryService.getAllLaboratories();
+            return ResponseEntity.status(HttpStatus.OK).body(labs);
+        }
     }
 
 }

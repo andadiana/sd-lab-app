@@ -11,4 +11,5 @@ public interface AssignmentService {
     public Assignment createAssignment(Assignment assignment);
     public Assignment updateAssignment(Assignment assignment);
     public void deleteAssignment(int id);
+    public List<Assignment> getAssignmentsByLaboratoryId(int labId);
 }

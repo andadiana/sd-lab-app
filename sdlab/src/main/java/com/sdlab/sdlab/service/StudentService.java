@@ -13,4 +13,5 @@ public interface StudentService {
     public void deleteStudent(int id);
     public boolean isValid(Student student);
     public Student getStudentByEmail(String email);
+    public void updatePassword(Student student, String password);
 }
