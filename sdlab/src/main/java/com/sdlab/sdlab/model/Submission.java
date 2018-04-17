@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.persistence.*;
 import java.util.Date;
 
+@Entity
 public class Submission {
 
     @Id
@@ -22,8 +23,8 @@ public class Submission {
     private int grade;
 
     @ManyToOne
-    @JoinColumn(name="lab_id")
-    private Laboratory laboratory;
+    @JoinColumn(name="student_id")
+    private Student student;
 
     @ManyToOne
     @JoinColumn(name="assignment_id")
@@ -59,14 +60,6 @@ public class Submission {
 
     public void setGrade(int grade) {
         this.grade = grade;
-    }
-
-    public Laboratory getLaboratory() {
-        return laboratory;
-    }
-
-    public void setLaboratory(Laboratory laboratory) {
-        this.laboratory = laboratory;
     }
 
     public Assignment getAssignment() {

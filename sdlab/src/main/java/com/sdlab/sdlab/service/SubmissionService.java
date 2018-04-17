@@ -1,11 +1,9 @@
 package com.sdlab.sdlab.service;
 
 import com.sdlab.sdlab.model.Submission;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public interface SubmissionService {
 
     public List<Submission> getAllSubmissions();
