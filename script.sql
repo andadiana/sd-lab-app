@@ -31,6 +31,7 @@ CREATE TABLE student
 
 CREATE TABLE attendance
 (
+    id INT PRIMARY KEY AUTO_INCREMENT,
     lab_id INT NOT NULL,
     student_id INT NOT NULL,
     attended BIT NOT NULL,
