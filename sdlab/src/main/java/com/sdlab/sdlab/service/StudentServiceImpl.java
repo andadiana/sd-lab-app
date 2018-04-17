@@ -43,7 +43,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student createStudent(Student student) {
+    public String createStudent(Student student) {
         student.setRole(Role.STUDENT);
         student.setPasswordSet(false);
         student.setId(0);
@@ -51,7 +51,8 @@ public class StudentServiceImpl implements StudentService {
         System.out.println("\n\nToken is: \n\n" + token);
         student.setPassword(encryptPassword(token));
         System.out.println("Student service create: " + student);
-        return studentRepository.save(student);
+        studentRepository.save(student);
+        return token;
     }
 
     @Override

@@ -14,6 +14,7 @@ CREATE TABLE user
     name VARCHAR(30) NOT NULL,
     email VARCHAR(50) NOT NULL,
     password CHAR(128) NOT NULL,
+    password_set BIT NOT NULL,
     role ENUM('ADMIN','STUDENT') NOT NULL
 );
 CREATE UNIQUE INDEX user_email_uindex ON user (email);
@@ -24,7 +25,6 @@ CREATE TABLE student
     PRIMARY KEY,
   group_nr     CHAR(5)     NOT NULL,
   hobby        VARCHAR(30) NULL,
-  password_set BIT         NOT NULL,
   CONSTRAINT student_user_id_fk
   FOREIGN KEY (id) REFERENCES user (id)
 )

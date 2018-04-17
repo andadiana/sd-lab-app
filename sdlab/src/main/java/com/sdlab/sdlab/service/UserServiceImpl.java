@@ -40,6 +40,13 @@ public class UserServiceImpl implements UserService {
         throw new LoginException("Incorrect password!");
     }
 
+    @Override
+    public boolean isPasswordSet(User user) {
+        User u = userRepository.findByEmail(user.getEmail());
+        System.out.println("\n\nis passoword set: " + u.isPasswordSet() + "\n\n\n");
+        return u.isPasswordSet();
+    }
+
     private boolean checkPassword(String givenPass, String actualPass) {
         //PasswordEncrypter encrypter = new PasswordEncrypterMD5();
         String encryptedPass = encrypter.encrypt(givenPass);

@@ -8,7 +8,7 @@ public interface StudentService {
 
     public List<Student> getAllStudents();
     public Student getStudentById(int id);
-    public Student createStudent(Student student);
+    public String createStudent(Student student);
     public Student updateStudent(Student student);
     public void deleteStudent(int id);
     public boolean isValid(Student student);

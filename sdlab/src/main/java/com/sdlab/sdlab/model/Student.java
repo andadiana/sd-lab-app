@@ -18,9 +18,6 @@ public class Student extends User {
     @Column(name = "hobby")
     private String hobby;
 
-    @Column(name = "password_set")
-    private boolean passwordSet;
-
     @OneToMany(mappedBy = "student")
     @JsonBackReference
     @JsonIgnore
@@ -45,14 +42,6 @@ public class Student extends User {
 
     public void setHobby(String hobby) {
         this.hobby = hobby;
-    }
-
-    public boolean isPasswordSet() {
-        return passwordSet;
-    }
-
-    public void setPasswordSet(boolean passwordSet) {
-        this.passwordSet = passwordSet;
     }
 
     @JsonIgnore

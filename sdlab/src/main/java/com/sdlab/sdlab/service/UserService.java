@@ -9,4 +9,5 @@ public interface UserService {
 
     public User getById(int id);
     public Role logIn(String email, String password) throws LoginException;
+    public boolean isPasswordSet(User user);
 }

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.security.auth.login.LoginException;
 
+import java.util.HashMap;
+
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
@@ -25,7 +27,16 @@ public class LoginController {
     public ResponseEntity logIn(@RequestBody User user) {
         try {
             Role role = userService.logIn(user.getEmail(), user.getPassword());
-            return ResponseEntity.status(HttpStatus.OK).body(role);
+            HashMap<String, String> map = new HashMap<>();
+            map.put("role", role.toString());
+            System.out.println(userService.isPasswordSet(user));
+            if (userService.isPasswordSet(user)) {
+                map.put("passwordSet", "True");
+            }
+            else {
+                map.put("passwordSet", "False");
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(map);
         } catch (LoginException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials!");
         }

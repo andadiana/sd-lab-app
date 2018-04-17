@@ -1,7 +1,6 @@
 package com.sdlab.sdlab.controller;
 
 import com.sdlab.sdlab.dto.PasswordUpdateDTO;
-import com.sdlab.sdlab.model.Role;
 import com.sdlab.sdlab.model.Student;
 import com.sdlab.sdlab.service.StudentService;
 import com.sdlab.sdlab.service.UserService;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.security.auth.login.LoginException;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -50,15 +50,16 @@ public class StudentController {
 
     @RequestMapping(method = POST)
     public ResponseEntity createStudent(@Validated @RequestBody Student student) {
-        //TODO maybe find a diff method for exception handling?
         //check if student already exists
         Student student1 = studentService.getStudentByEmail(student.getEmail());
         if (student1 != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student email already exists!");
         }
         if (studentService.isValid(student)) {
-            Student createdStudent = studentService.createStudent(student);
-            return ResponseEntity.status(HttpStatus.OK).body(createdStudent);
+            String token = studentService.createStudent(student);
+            HashMap<String, String> map = new HashMap<>();
+            map.put("token", token);
+            return ResponseEntity.status(HttpStatus.OK).body(map);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid student structure!");
     }
