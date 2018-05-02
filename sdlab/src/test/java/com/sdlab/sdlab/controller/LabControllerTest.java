@@ -1,19 +1,19 @@
 package com.sdlab.sdlab.controller;
 
-import com.sdlab.sdlab.auth.WebSecurityConfig;
 import com.sdlab.sdlab.model.Laboratory;
 import com.sdlab.sdlab.service.LaboratoryService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
 import java.sql.Date;
@@ -27,14 +27,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(LabController.class)
-@ContextConfiguration(classes={WebSecurityConfig.class})
+//@SpringBootTest(classes =SDLabApplication.class)
 public class LabControllerTest {
 
     @Autowired
-    private MockMvc mvc;
+    private MockMvc mockMvc;
 
-    @MockBean
+    @Mock
     private LaboratoryService laboratoryServiceMock;
+
+    @InjectMocks
+    private LabController labController;
+
+    @Before
+    public void init(){
+        MockitoAnnotations.initMocks(this);
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(labController)
+                .build();
+    }
 
     @Test
     public void getLabById_labExists_OK() {
@@ -49,7 +60,7 @@ public class LabControllerTest {
         when(laboratoryServiceMock.getLabById(1)).thenReturn(lab);
 
         try {
-            mvc.perform(get("/labs/{id}", 1))
+            mockMvc.perform(get("/labs/{id}", 1))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id", is(1)))
                     .andExpect(jsonPath("$.description", is("description")))
@@ -76,7 +87,7 @@ public class LabControllerTest {
         when(laboratoryServiceMock.getLabById(1)).thenReturn(lab);
 
         try {
-            mvc.perform(get("/labs/{id}", 2))
+            mockMvc.perform(get("/labs/{id}", 2))
                     .andExpect(status().isNotFound());
         }catch (Exception e) {
             e.printStackTrace();
@@ -88,6 +99,7 @@ public class LabControllerTest {
 
     @Test
     public void getAllLabs_labsFound_Ok() {
+
         Laboratory first = new Laboratory();
         first.setId(1);
         first.setDescription("description");
@@ -107,8 +119,9 @@ public class LabControllerTest {
         when(laboratoryServiceMock.getAllLaboratories()).thenReturn(Arrays.asList(first, second));
 
         try {
-            mvc.perform(get("/api/todo"))
+            mockMvc.perform(get("/labs"))
                     .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                     .andExpect(jsonPath("$", hasSize(2)))
                     .andExpect(jsonPath("$[0].id", is(1)))
                     .andExpect(jsonPath("$[0].title", is("lab1")))
@@ -116,12 +129,13 @@ public class LabControllerTest {
                     .andExpect(jsonPath("$[0].id", is(2)))
                     .andExpect(jsonPath("$[0].title", is("lab2")))
                     .andExpect(jsonPath("$[0].labNumber", is(2)));
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         verify(laboratoryServiceMock, times(1)).getAllLaboratories();
         verifyNoMoreInteractions(laboratoryServiceMock);
+
+
     }
 }

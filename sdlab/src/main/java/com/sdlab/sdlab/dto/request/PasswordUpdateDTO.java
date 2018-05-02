@@ -1,4 +1,4 @@
-package com.sdlab.sdlab.dto;
+package com.sdlab.sdlab.dto.request;
 
 public class PasswordUpdateDTO {
 
@@ -6,7 +6,6 @@ public class PasswordUpdateDTO {
 
     private String newPassword;
 
-    private int studentId;
 
     public String getOldPassword() {
         return oldPassword;
@@ -24,11 +23,4 @@ public class PasswordUpdateDTO {
         this.newPassword = newPassword;
     }
 
-    public int getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(int studentId) {
-        this.studentId = studentId;
-    }
 }

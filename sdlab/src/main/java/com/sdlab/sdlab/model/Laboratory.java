@@ -112,4 +112,10 @@ public class Laboratory {
     public void setAttendance(Set<Attendance> attendance) {
         this.attendance = attendance;
     }
+
+    @Override
+    public String toString() {
+        return id + " lab number " + labNumber + " date " + date + " title " + title + " curricula " +
+                curricula + " description " + description;
+    }
 }

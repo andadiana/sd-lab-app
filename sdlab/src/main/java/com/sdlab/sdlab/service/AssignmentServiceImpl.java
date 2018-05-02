@@ -1,9 +1,7 @@
 package com.sdlab.sdlab.service;
 
 import com.sdlab.sdlab.model.Assignment;
-import com.sdlab.sdlab.model.Laboratory;
 import com.sdlab.sdlab.repository.AssignmentRepository;
-import com.sdlab.sdlab.repository.LaboratoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,5 @@
 package com.sdlab.sdlab.service;
 
-import com.sdlab.sdlab.model.Role;
 import com.sdlab.sdlab.model.User;
 import com.sdlab.sdlab.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -41,8 +41,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isPasswordSet(User user) {
-        User u = userRepository.findByEmail(user.getEmail());
+    public boolean isPasswordSet(String email) {
+        User u = userRepository.findByEmail(email);
         return u.isPasswordSet();
     }
 

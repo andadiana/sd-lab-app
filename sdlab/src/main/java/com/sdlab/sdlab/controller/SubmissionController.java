@@ -1,11 +1,14 @@
 package com.sdlab.sdlab.controller;
 
+import com.sdlab.sdlab.dto.request.SubmissionRequestDTO;
+import com.sdlab.sdlab.dto.response.SubmissionResponseDTO;
 import com.sdlab.sdlab.model.Assignment;
 import com.sdlab.sdlab.model.Student;
 import com.sdlab.sdlab.model.Submission;
 import com.sdlab.sdlab.service.AssignmentService;
 import com.sdlab.sdlab.service.StudentService;
 import com.sdlab.sdlab.service.SubmissionService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -31,13 +35,15 @@ public class SubmissionController {
     @Autowired
     private StudentService studentService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @RequestMapping(method = GET)
-    public List<Submission> getAllSubmissions() {
+    public List<SubmissionResponseDTO> getAllSubmissions() {
         List<Submission> submissions = submissionService.getAllSubmissions();
-        for (Submission s: submissions) {
-            System.out.println(s);
-        }
-        return submissions;
+        List<SubmissionResponseDTO> submissionsDTO = submissions.stream()
+                .map(s -> modelMapper.map(s, SubmissionResponseDTO.class)).collect(Collectors.toList());
+        return submissionsDTO;
     }
 
     @RequestMapping(method = GET, value = "/{submissionId}")
@@ -47,48 +53,48 @@ public class SubmissionController {
             //submission not found
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.status(HttpStatus.OK).body(submission);
+        return ResponseEntity.status(HttpStatus.OK).body(modelMapper.map(submission, SubmissionResponseDTO.class));
     }
 
     @RequestMapping(method = POST)
-    public ResponseEntity createSubmission(@RequestBody Submission submission) {
-        Student student = studentService.getStudentById(submission.getStudent().getId());
+    public ResponseEntity createSubmission(@RequestBody SubmissionRequestDTO submissionDTO) {
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
+        Student student = studentService.getStudentById(submissionDTO.getStudentId());
         if (student == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student does not exist!");
         }
-        Assignment assignment = assignmentService.getAssignmentById(submission.getAssignment().getId());
+        Assignment assignment = assignmentService.getAssignmentById(submissionDTO.getAssignmentId());
         if (assignment == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Assignment does not exist!");
         }
         if (submissionService.submissionExists(student.getId(), assignment.getId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student has already submitted this assignment!");
         }
-        Submission createdSubmission = submissionService.createSubmission(submission);
+        Submission createdSubmission = submissionService.createSubmission(modelMapper.map(submissionDTO, Submission.class));
 //        return ResponseEntity.status(HttpStatus.OK).body(createdSubmission);
         if (createdSubmission == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot create submission!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot create submission after deadline passed!");
         }
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @RequestMapping(method = PUT, value = "/{submissionId}")
-    public ResponseEntity updateSubmission(@PathVariable Integer submissionId, @RequestBody Submission submission) {
+    public ResponseEntity updateSubmission(@PathVariable Integer submissionId, @RequestBody SubmissionRequestDTO submissionDTO) {
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
         Submission submission1 = submissionService.getSubmissionById(submissionId);
         if (submission1 == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Submission not found!");
         }
-        Student student = studentService.getStudentById(submission.getStudent().getId());
+        Student student = studentService.getStudentById(submissionDTO.getStudentId());
         if (student == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student does not exist!");
         }
-        Assignment assignment = assignmentService.getAssignmentById(submission.getAssignment().getId());
+        Assignment assignment = assignmentService.getAssignmentById(submissionDTO.getAssignmentId());
         if (assignment == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Assignment does not exist!");
         }
-        System.out.println(submission1);
-//        if (!submission1.getDate().equals(submission.getDate())) {
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body("Date field cannot be changed!");
-//        }
+        Submission submission = modelMapper.map(submissionDTO, Submission.class);
+        submission.setDate(submission1.getDate());
         if(submissionService.validSubmission(submission)) {
             submission.setId(submissionId);
             submissionService.updateSubmission(submission);
@@ -112,6 +118,8 @@ public class SubmissionController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Assignment not found!");
         }
         List<Submission> submissions = submissionService.getSubmissionsByAssignmmentId(assignmentId);
-        return ResponseEntity.status(HttpStatus.OK).body(submissions);
+        List<SubmissionResponseDTO> submissionsDTO = submissions.stream()
+                .map(s -> modelMapper.map(s, SubmissionResponseDTO.class)).collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(submissionsDTO);
     }
 }

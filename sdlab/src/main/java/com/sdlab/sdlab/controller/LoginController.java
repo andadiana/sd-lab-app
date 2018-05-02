@@ -1,5 +1,7 @@
 package com.sdlab.sdlab.controller;
 
+import com.sdlab.sdlab.dto.request.LoginRequestDTO;
+import com.sdlab.sdlab.dto.response.LoginResponseDTO;
 import com.sdlab.sdlab.model.Role;
 import com.sdlab.sdlab.model.User;
 import com.sdlab.sdlab.service.UserService;
@@ -24,18 +26,18 @@ public class LoginController {
     private UserService userService;
 
     @RequestMapping(method = POST)
-    public ResponseEntity logIn(@RequestBody User user) {
+    public ResponseEntity logIn(@RequestBody LoginRequestDTO loginRequest) {
         try {
-            Role role = userService.logIn(user.getEmail(), user.getPassword());
-            HashMap<String, String> map = new HashMap<>();
-            map.put("role", role.toString());
-            if (userService.isPasswordSet(user)) {
-                map.put("passwordSet", "True");
+            Role role = userService.logIn(loginRequest.getEmail(), loginRequest.getPassword());
+            LoginResponseDTO responseDTO = new LoginResponseDTO();
+            responseDTO.setRole(role.toString());
+            if (userService.isPasswordSet(loginRequest.getEmail())) {
+                responseDTO.setPasswordSet(true);
             }
             else {
-                map.put("passwordSet", "False");
+                responseDTO.setPasswordSet(true);
             }
-            return ResponseEntity.status(HttpStatus.OK).body(map);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
         } catch (LoginException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials!");
         }

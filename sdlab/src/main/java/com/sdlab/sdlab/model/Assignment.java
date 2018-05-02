@@ -4,9 +4,10 @@ package com.sdlab.sdlab.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sdlab.sdlab.model.Laboratory;
+import com.sdlab.sdlab.model.Submission;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public class Assignment {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "deadline", nullable = false)
     private Date deadline;
 
@@ -80,5 +81,10 @@ public class Assignment {
     @JsonIgnore
     public void setSubmissions(Set<Submission> submissions) {
         this.submissions = submissions;
+    }
+
+    @Override
+    public String toString() {
+        return id + " name: " + name + " deadline " + deadline + " description " + description + " lab " + laboratory;
     }
 }

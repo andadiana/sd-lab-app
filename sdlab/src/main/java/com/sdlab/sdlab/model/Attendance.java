@@ -1,6 +1,9 @@
 package com.sdlab.sdlab.model;
 
 
+import com.sdlab.sdlab.model.Laboratory;
+import com.sdlab.sdlab.model.Student;
+
 import javax.persistence.*;
 
 @Entity

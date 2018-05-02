@@ -1,6 +1,5 @@
 package com.sdlab.sdlab.service;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.sdlab.sdlab.model.Assignment;
 import com.sdlab.sdlab.model.Submission;
 import com.sdlab.sdlab.repository.AssignmentRepository;
@@ -81,7 +80,8 @@ public class SubmissionServiceImpl implements SubmissionService{
     @Override
     public boolean validSubmission(Submission submission) {
         Date currentDate = new Date();
-        if (submission.getAssignment().getDeadline().before(currentDate)) {
+        Assignment assignment = assignmentRepository.getOne(submission.getAssignment().getId());
+        if (assignment.getDeadline().before(currentDate)) {
             return false;
         }
         return true;
