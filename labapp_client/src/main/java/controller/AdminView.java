@@ -2,25 +2,14 @@ package controller;
 
 import client.ClientProvider;
 import client.ClientProviderImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
-import connection.HTTPMethod;
-import connection.HTTPRequest;
-import injector.GuiceFXMLLoader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
-import model.Attendance;
-import org.modelmapper.ModelMapper;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class AdminView {
