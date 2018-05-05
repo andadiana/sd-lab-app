@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="pane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controller.LabsViewAdmin">
+  <children>
+    <TableView fx:id="labsTable" layoutX="256.0" layoutY="66.0" prefHeight="197.00009999999747" prefWidth="237.0">
+      <columns>
+        <TableColumn prefWidth="75.0" text="Lab Number" fx:id="labNumberColumn" />
+        <TableColumn prefWidth="75.0" text="Title" fx:id="titleColumn" />
+        <TableColumn prefWidth="75.0" text="Date" fx:id="dateColumn" />
+      </columns>
+    </TableView>
+  </children>
+</AnchorPane>
