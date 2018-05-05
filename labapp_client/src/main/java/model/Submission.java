@@ -11,9 +11,9 @@ public class Submission {
 
     private int grade;
 
-    private int studentId;
+    private Student student;
 
-    private int assignmentId;
+    private Assignment assignment;
 
     public int getId() {
         return id;
@@ -47,19 +47,27 @@ public class Submission {
         this.grade = grade;
     }
 
-    public int getStudentId() {
-        return studentId;
+    public Student getStudent() {
+        return student;
     }
 
-    public void setStudentId(int studentId) {
-        this.studentId = studentId;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
-    public int getAssignmentId() {
-        return assignmentId;
+    public Assignment getAssignment() {
+        return assignment;
     }
 
-    public void setAssignmentId(int assignmentId) {
-        this.assignmentId = assignmentId;
+    public void setAssignment(Assignment assignment) {
+        this.assignment = assignment;
+    }
+
+    public String getAssignmentName() {
+        return this.assignment.getName();
+    }
+
+    public String getStudentName() {
+        return this.student.getName();
     }
 }

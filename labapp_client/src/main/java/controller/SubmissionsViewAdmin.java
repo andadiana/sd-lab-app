@@ -19,10 +19,10 @@ public class SubmissionsViewAdmin {
     private TableView<Submission> submissionsTable;
 
     @FXML
-    private TableColumn<Submission, Integer> assignmentNameColumn;
+    private TableColumn<Submission, String> assignmentNameColumn;
 
     @FXML
-    private TableColumn<Submission, Integer> studentNameColumn;
+    private TableColumn<Submission, String> studentNameColumn;
 
     @FXML
     private TableColumn<Submission, Date> dateColumn;
@@ -40,8 +40,8 @@ public class SubmissionsViewAdmin {
     }
 
     private void initializeSubmissionsTable() {
-        assignmentNameColumn.setCellValueFactory(new PropertyValueFactory<>("assignmentId"));
-        studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentId"));
+        assignmentNameColumn.setCellValueFactory(new PropertyValueFactory<>("assignmentName"));
+        studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentName"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         gradeColumn.setCellValueFactory(new PropertyValueFactory<>("grade"));
 

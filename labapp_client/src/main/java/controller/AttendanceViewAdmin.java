@@ -22,7 +22,7 @@ public class AttendanceViewAdmin {
     private TableColumn<Attendance, Integer> labNumberColumn;
 
     @FXML
-    private TableColumn<Attendance, Integer> studentNameColumn;
+    private TableColumn<Attendance, String> studentNameColumn;
 
     @FXML
     private TableColumn<Attendance, Boolean> attendedColumn;
@@ -38,12 +38,13 @@ public class AttendanceViewAdmin {
 
     private void initializeAttendanceTable() {
         attendedColumn.setCellValueFactory(new PropertyValueFactory<>("attended"));
-        studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentId"));
-        labNumberColumn.setCellValueFactory(new PropertyValueFactory<>("laboratoryId"));
+        studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentName"));
+        labNumberColumn.setCellValueFactory(new PropertyValueFactory<>("labNumber"));
 
         List<Attendance> attendance = getAllAttendance();
         if (attendance != null) {
             ObservableList<Attendance> attendanceObs = FXCollections.observableArrayList(attendance);
+//            System.out.println("\n\n" + attendanceObs.size());
             attendanceTable.setItems(attendanceObs);
         }
     }

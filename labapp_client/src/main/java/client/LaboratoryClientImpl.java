@@ -1,9 +1,10 @@
 package client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
 import connection.HTTPRequest;
+import dto.request.LaboratoryRequestDTO;
 import dto.response.LaboratoryResponseDTO;
 import model.Laboratory;
 import org.modelmapper.ModelMapper;
@@ -35,8 +36,43 @@ public class LaboratoryClientImpl implements  LaboratoryClient{
             return labs;
 
         }catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void createLaboratory(Laboratory lab) {
+        try {
+            LaboratoryRequestDTO labDTO = modelMapper.map(lab, LaboratoryRequestDTO.class);
+            String jsonString = jsonMapper.writeValueAsString(labDTO);
+            HTTPRequest.sendPost("/labs", jsonString);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateLaboratory(Laboratory lab) {
+        try {
+            LaboratoryRequestDTO labDTO = modelMapper.map(lab, LaboratoryRequestDTO.class);
+            String jsonString = jsonMapper.writeValueAsString(labDTO);
+            String path = "/labs/" + lab.getId();
+            HTTPRequest.sendPut(path, jsonString);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteLaboratory(int id) {
+        try {
+            String path = "/labs/" + id;
+            HTTPRequest.sendDelete(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

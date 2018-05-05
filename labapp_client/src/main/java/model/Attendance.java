@@ -6,9 +6,9 @@ public class Attendance {
 
     private boolean attended;
 
-    private int laboratoryId;
+    private Laboratory laboratory;
 
-    private int studentId;
+    private Student student;
 
     public int getId() {
         return id;
@@ -26,19 +26,27 @@ public class Attendance {
         this.attended = attended;
     }
 
-    public int getLaboratoryId() {
-        return laboratoryId;
+    public Laboratory getLaboratory() {
+        return laboratory;
     }
 
-    public void setLaboratoryId(int laboratoryId) {
-        this.laboratoryId = laboratoryId;
+    public void setLaboratory(Laboratory laboratory) {
+        this.laboratory = laboratory;
     }
 
-    public int getStudentId() {
-        return studentId;
+    public Student getStudent() {
+        return student;
     }
 
-    public void setStudentId(int studentId) {
-        this.studentId = studentId;
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    public String getStudentName() {
+        return this.student.getName();
+    }
+
+    public Integer getLabNumber() {
+        return this.laboratory.getLabNumber();
     }
 }

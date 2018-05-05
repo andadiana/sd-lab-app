@@ -1,8 +1,7 @@
 package connection;
 
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.*;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
@@ -33,20 +32,48 @@ public class HTTPRequest {
         }
     }
 
-    public static String sendPost(String path) throws IOException {
-        //TODO
+    public static void sendPost(String path, String json) throws Exception {
         CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost("http://localhost:8080" + path);
+        StringEntity entity = new StringEntity(json);
+
+        httpPost.setEntity(entity);
+        httpPost.setHeader("Accept", "application/json");
+        httpPost.setHeader("Content-type", "application/json");
+
         CloseableHttpResponse response = client.execute(httpPost);
-
-        BufferedReader rd = new BufferedReader(
-                new InputStreamReader(response.getEntity().getContent()));
-
-        StringBuffer result = new StringBuffer();
-        String line = "";
-        while ((line = rd.readLine()) != null) {
-            result.append(line);
+        if (response.getStatusLine().getStatusCode() != 200) {
+            client.close();
+            throw new Exception("Request failed!");
         }
-        return result.toString();
     }
+
+    public static void sendPut(String path, String json) throws Exception {
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpPut httpPut = new HttpPut("http://localhost:8080" + path);
+        StringEntity entity = new StringEntity(json);
+
+        httpPut.setEntity(entity);
+        httpPut.setHeader("Accept", "application/json");
+        httpPut.setHeader("Content-type", "application/json");
+
+        CloseableHttpResponse response = client.execute(httpPut);
+        if (response.getStatusLine().getStatusCode() != 202) {
+            client.close();
+            throw new Exception("Request failed!");
+        }
+    }
+
+    public static void sendDelete(String path) throws Exception {
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpDelete httpDelete = new HttpDelete("http://localhost:8080" + path);
+        CloseableHttpResponse response = client.execute(httpDelete);
+
+        if (response.getStatusLine().getStatusCode() != 202) {
+            client.close();
+            throw new Exception("Request failed!");
+        }
+    }
+
+
 }
