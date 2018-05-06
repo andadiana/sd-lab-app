@@ -2,6 +2,7 @@ package com.sdlab.sdlab.controller;
 
 import com.sdlab.sdlab.dto.request.PasswordUpdateDTO;
 import com.sdlab.sdlab.dto.request.StudentRequestDTO;
+import com.sdlab.sdlab.dto.response.StudentCreationResponseDTO;
 import com.sdlab.sdlab.dto.response.StudentResponseDTO;
 import com.sdlab.sdlab.model.Student;
 import com.sdlab.sdlab.service.StudentService;
@@ -64,9 +65,9 @@ public class StudentController {
         Student student = modelMapper.map(studentDTO, Student.class);
         if (studentService.isValid(student)) {
             String token = studentService.createStudent(student);
-            HashMap<String, String> map = new HashMap<>();
-            map.put("token", token);
-            return ResponseEntity.status(HttpStatus.OK).body(map);
+            StudentCreationResponseDTO responseDTO = new StudentCreationResponseDTO();
+            responseDTO.setToken(token);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid student structure!");
     }
