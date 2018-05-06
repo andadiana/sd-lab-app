@@ -90,4 +90,9 @@ public class SubmissionServiceImpl implements SubmissionService{
     public List<Submission> getSubmissionsByStudentIdAndAssignmentId(int studentId, int assignmentId) {
         return submissionRepository.getSubmissionsByStudentIdAndAssignmentId(studentId, assignmentId);
     }
+
+    @Override
+    public List<Submission> getSubmissionsByStudentId(int studentId) {
+        return submissionRepository.getSubmissionsByStudentId(studentId);
+    }
 }

@@ -122,4 +122,16 @@ public class SubmissionController {
                 .map(s -> modelMapper.map(s, SubmissionResponseDTO.class)).collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(submissionsDTO);
     }
+
+    @RequestMapping(method = GET, value = "/students/{studentId}")
+    public ResponseEntity getSubmissionsForStudent(@PathVariable Integer studentId) {
+        Student student = studentService.getStudentById(studentId);
+        if (student == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Student not found!");
+        }
+        List<Submission> submissions = submissionService.getSubmissionsByStudentId(studentId);
+        List<SubmissionResponseDTO> submissionsDTO = submissions.stream()
+                .map(s -> modelMapper.map(s, SubmissionResponseDTO.class)).collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(submissionsDTO);
+    }
 }
