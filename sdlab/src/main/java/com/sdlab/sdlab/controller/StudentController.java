@@ -86,7 +86,7 @@ public class StudentController {
         if (studentService.isValid(student)) {
             student.setId(studentId);
             studentService.updateStudent(student);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid student structure!");
     }
@@ -105,7 +105,7 @@ public class StudentController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials!");
         }
         studentService.updatePassword(student, passwordUpdateDTO.getNewPassword());
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
 
     }
 
