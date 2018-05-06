@@ -17,7 +17,8 @@ public class LabClientApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/LoginView.fxml"));
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/StudentView.fxml"));
         Parent root = loader.load();
 
         stage = primaryStage;

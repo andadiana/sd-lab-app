@@ -6,14 +6,23 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controller.StudentsViewAdmin">
+<AnchorPane prefHeight="537.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.StudentsViewAdmin">
   <children>
-    <TableView fx:id="studentsTable" layoutX="256.0" layoutY="66.0" prefHeight="197.00009999999747" prefWidth="237.0">
+    <TableView fx:id="studentsTable" layoutX="36.0" layoutY="48.0" onMouseClicked="#studentsTableClicked" prefHeight="197.00009999999747" prefWidth="237.0">
       <columns>
-        <TableColumn prefWidth="75.0" text="Name" fx:id="nameColumn" />
-        <TableColumn prefWidth="75.0" text="Email" fx:id="emailColumn" />
-        <TableColumn prefWidth="75.0" text="Group" fx:id="groupColumn" />
+        <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
+        <TableColumn fx:id="emailColumn" prefWidth="75.0" text="Email" />
+        <TableColumn fx:id="groupColumn" prefWidth="75.0" text="Group" />
       </columns>
     </TableView>
+    <TextField fx:id="nameTextField" layoutX="41.0" layoutY="274.0" prefHeight="23.0" prefWidth="184.0" />
+      <TextField fx:id="emailTextField" layoutX="41.0" layoutY="312.0" prefHeight="23.0" prefWidth="184.0" />
+      <TextField fx:id="groupTextField" layoutX="40.0" layoutY="353.0" prefHeight="23.0" prefWidth="184.0" />
+      <Button fx:id="addButton" layoutX="298.0" layoutY="410.0" mnemonicParsing="false" onAction="#addButtonClicked" text="Add" />
+    <Button fx:id="updateButton" layoutX="352.0" layoutY="411.0" mnemonicParsing="false" onAction="#updateButtonClicked" text="Update" />
+    <Button fx:id="deleteButton" layoutX="426.0" layoutY="411.0" mnemonicParsing="false" onAction="#deleteButtonClicked" text="Delete" />
+    <Label fx:id="errorLabel" layoutX="62.0" layoutY="396.0" prefHeight="15.0" prefWidth="66.0" text="Label" />
+      <TextField fx:id="tokenTextField" layoutX="385.0" layoutY="221.0" />
+      <Label fx:id="tokenLabel" layoutX="385.0" layoutY="181.0" text="Label" />
   </children>
 </AnchorPane>

@@ -24,16 +24,54 @@ public class LaboratoryClientImpl implements  LaboratoryClient{
         this.modelMapper = modelMapper;
     }
 
+    @Override
     public List<Laboratory> getLaboratories() {
         try {
             String jsonResponse = HTTPRequest.sendGet("/labs");
 
             System.out.println("RESPONSE: " + jsonResponse);
-            List<LaboratoryResponseDTO> labsDTO = jsonMapper.readValue(jsonResponse.toString(),
+            List<LaboratoryResponseDTO> labsDTO = jsonMapper.readValue(jsonResponse,
                     new TypeReference<List<LaboratoryResponseDTO>>(){});
             List<Laboratory> labs = labsDTO.stream().map(l -> modelMapper.map(l, Laboratory.class)).collect(Collectors.toList());
 
             return labs;
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Laboratory> getLaboratories(String keyword) {
+        try {
+            String path = "/labs?keyword=" + keyword;
+            String jsonResponse = HTTPRequest.sendGet(path);
+
+            System.out.println("RESPONSE: " + jsonResponse);
+            List<LaboratoryResponseDTO> labsDTO = jsonMapper.readValue(jsonResponse,
+                    new TypeReference<List<LaboratoryResponseDTO>>(){});
+            List<Laboratory> labs = labsDTO.stream().map(l -> modelMapper.map(l, Laboratory.class)).collect(Collectors.toList());
+
+            return labs;
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Laboratory getLaboratory(int id) {
+        try {
+            String path = "/labs/" + id;
+            String jsonResponse = HTTPRequest.sendGet(path);
+
+            System.out.println("RESPONSE: " + jsonResponse);
+            LaboratoryResponseDTO labDTO = jsonMapper.readValue(jsonResponse, LaboratoryResponseDTO.class);
+            Laboratory lab = modelMapper.map(labDTO, Laboratory.class);
+
+            return lab;
 
         }catch (Exception e) {
             e.printStackTrace();

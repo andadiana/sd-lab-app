@@ -12,22 +12,20 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
-import model.*;
+import model.Assignment;
+import model.Student;
+import model.Submission;
 
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
 
-public class SubmissionsViewAdmin {
+public class SubmissionsViewStudent {
 
     @FXML
     private TableView<Submission> submissionsTable;
 
     @FXML
     private TableColumn<Submission, String> assignmentNameColumn;
-
-    @FXML
-    private TableColumn<Submission, String> studentNameColumn;
 
     @FXML
     private TableColumn<Submission, Date> dateColumn;
@@ -39,16 +37,10 @@ public class SubmissionsViewAdmin {
     private ComboBox<Assignment> assignmentComboBox;
 
     @FXML
-    private TextField studentNameTextField;
-
-    @FXML
-    private TextField gradeTextField;
-
-    @FXML
     private TextArea descriptionTextArea;
 
     @FXML
-    private Button gradeButton;
+    private Button submitButton;
 
     @FXML
     private Label errorLabel;
@@ -60,42 +52,34 @@ public class SubmissionsViewAdmin {
     private ObservableList<Assignment> assignmentsObs;
     private ObservableList<Submission> submissionsObs;
 
+    private Student currentStudent;
 
-    public void initData(ClientProvider clientProvider) {
+
+    public void initData(ClientProvider clientProvider, Student student) {
         submissionClient = clientProvider.getSubmissionClient();
         assignmentClient = clientProvider.getAssignmentClient();
         studentClient = clientProvider.getStudentClient();
 
+        currentStudent = student;
+
         initializeSubmissionsTable();
         initializeAssignmentComboBox();
 
-        studentNameTextField.setEditable(false);
-        descriptionTextArea.setEditable(false);
         resetError();
     }
 
     public void updateData() {
         updateAssignmentComboBox();
         updateTableContents();
-//        updateTableContents();
     }
 
     private void resetFields() {
-        studentNameTextField.clear();
         descriptionTextArea.clear();
-        gradeTextField.clear();
-    }
-
-    private void updateTableContents(Assignment assignment) {
-        List<Submission> submissions = submissionClient.getSubmissionsForAssignment(assignment);
-        if (submissions != null) {
-            submissionsObs = FXCollections.observableArrayList(submissions);
-            submissionsTable.setItems(submissionsObs);
-        }
+        assignmentComboBox.setValue(assignmentsObs.get(0));
     }
 
     private void updateTableContents() {
-        List<Submission> submissions = submissionClient.getSubmissions();
+        List<Submission> submissions = submissionClient.getSubmissionsForStudent(currentStudent);
         if (submissions != null) {
             submissionsObs = FXCollections.observableArrayList(submissions);
             submissionsTable.setItems(submissionsObs);
@@ -103,15 +87,11 @@ public class SubmissionsViewAdmin {
     }
 
     private void initializeSubmissionsTable() {
-        Assignment assignment = assignmentComboBox.getSelectionModel().getSelectedItem();
-        if (assignment != null) {
-            updateTableContents(assignment);
-        }
+        updateTableContents();
+
         assignmentNameColumn.setCellValueFactory(new PropertyValueFactory<>("assignmentName"));
-        studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentName"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         gradeColumn.setCellValueFactory(new PropertyValueFactory<>("grade"));
-
 
         // deselect row when clicked a second time
         submissionsTable.setRowFactory(c -> {
@@ -120,7 +100,7 @@ public class SubmissionsViewAdmin {
                 final int index = row.getIndex();
                 if (index >= 0 && index < submissionsTable.getItems().size() && submissionsTable.getSelectionModel().isSelected(index)  ) {
                     submissionsTable.getSelectionModel().clearSelection();
-//                    resetFields();
+                    resetFields();
                     e.consume();
                 }
             });
@@ -156,31 +136,42 @@ public class SubmissionsViewAdmin {
         });
     }
 
-    //TODO add assignment combobox clicked
 
     @FXML
     private void submissionsTableClicked(MouseEvent event) {
         Submission submission = submissionsTable.getSelectionModel().getSelectedItem();
         if (submission != null) {
-            studentNameTextField.setText(submission.getStudentName());
             descriptionTextArea.setText(submission.getDescription());
-            gradeTextField.setText(Integer.toString(submission.getGrade()));
         }
 
     }
 
     @FXML
-    private void gradeButtonClicked(ActionEvent event) {
+    private void submitButtonClicked(ActionEvent event) {
+
+        try {
+            Submission submission = parseSubmission();
+            submissionClient.createSubmission(submission);
+            submissionsObs.add(submission);
+            resetError();
+        } catch (Exception e) {
+            errorLabel.setText(e.getMessage());
+        }
+    }
+
+    @FXML
+    private void updateButtonClicked(ActionEvent event) {
         Submission selectedSubmission = submissionsTable.getSelectionModel().getSelectedItem();
         if (selectedSubmission == null) {
             errorLabel.setText("Must first select a submission from the table!");
         }
         else {
             try {
-                int grade = Integer.parseInt(gradeTextField.getText());
-                selectedSubmission.setGrade(grade);
-                submissionClient.updateSubmission(selectedSubmission);
-//                submissionsObs.add(submission);
+                submissionsObs.remove(selectedSubmission);
+                Submission submission = parseSubmission();
+                submission.setId(selectedSubmission.getId());
+                submissionClient.updateSubmission(submission);
+                submissionsObs.add(submission);
                 resetError();
             } catch (Exception e) {
                 errorLabel.setText(e.getMessage());
@@ -188,5 +179,22 @@ public class SubmissionsViewAdmin {
         }
     }
 
+    private Submission parseSubmission() throws Exception {
+        Assignment selectedAssignment = assignmentComboBox.getSelectionModel().getSelectedItem();
+        if (descriptionTextArea.getText().trim().equals("")) {
+            throw new Exception("Description cannot be empty!");
+        }
+        Date currentDate = new Date(new java.util.Date().getTime());
+        if (currentDate.after(selectedAssignment.getDeadline())) {
+            throw new Exception("Cannot submit assignment past the deadline!");
+        }
+        Submission submission = new Submission();
+        submission.setDescription(descriptionTextArea.getText());
+        submission.setDate(currentDate);
+        submission.setGrade(0);
+        submission.setAssignment(selectedAssignment);
+        submission.setStudent(currentStudent);
 
+        return submission;
+    }
 }

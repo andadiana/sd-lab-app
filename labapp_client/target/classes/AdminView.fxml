@@ -16,6 +16,7 @@
         <Button fx:id="assignmentsButton" mnemonicParsing="false" onAction="#assignmentsButtonClicked" text="Assignments" />
         <Button fx:id="attendanceButton" mnemonicParsing="false" onAction="#attendanceButtonClicked" text="Attendance" />
         <Button fx:id="submissionsButton" mnemonicParsing="false" onAction="#submissionsButtonClicked" text="Submissions" />
+        <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logoutButtonClicked" text="Logout" />
       </children>
       <padding>
         <Insets bottom="20.0" left="10.0" right="10.0" top="20.0" />

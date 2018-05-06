@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="472.0" prefWidth="604.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AssignmentsViewStudent">
+    <children>
+        <TableView fx:id="assignmentsTable" layoutX="60.0" layoutY="31.0" onMouseClicked="#assignmentsTableClicked" prefHeight="197.00009999999747" prefWidth="237.0">
+            <columns>
+                <TableColumn fx:id="assignmentNameColumn" prefWidth="75.0" text="Assignment Name" />
+                <TableColumn fx:id="deadlineColumn" prefWidth="75.0" text="Deadline" />
+                <TableColumn fx:id="labNumberColumn" prefWidth="75.0" text="Lab number" />
+            </columns>
+        </TableView>
+        <TextField fx:id="nameTextField" editable="false" layoutX="58.0" layoutY="263.0" prefHeight="23.0" prefWidth="184.0" />
+        <TextArea fx:id="descriptionTextArea" layoutX="276.0" layoutY="263.0" prefHeight="123.0" prefWidth="280.0000999999975" />
+        <DatePicker fx:id="datePicker" editable="false" layoutX="51.0" layoutY="328.0" />
+        <TextField fx:id="labTextField" editable="false" layoutX="60.0" layoutY="374.0" prefWidth="150.0" />
+    </children>
+</AnchorPane>

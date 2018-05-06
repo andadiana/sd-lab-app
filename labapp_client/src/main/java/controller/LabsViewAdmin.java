@@ -81,6 +81,14 @@ public class LabsViewAdmin {
 
     }
 
+    public void updateTableContents() {
+        List<Laboratory> labs = laboratoryClient.getLaboratories();
+        if (labs != null) {
+            labObs = FXCollections.observableArrayList(labs);
+            labsTable.setItems(labObs);
+        }
+    }
+
     public Pane getPane() {
         return pane;
     }
@@ -102,11 +110,7 @@ public class LabsViewAdmin {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
 
-        List<Laboratory> labs = getAllLaboratories();
-        if (labs != null) {
-            labObs = FXCollections.observableArrayList(labs);
-            labsTable.setItems(labObs);
-        }
+        updateTableContents();
 
         // deselect row when clicked a second time
         labsTable.setRowFactory(c -> {
@@ -116,15 +120,12 @@ public class LabsViewAdmin {
                         if (index >= 0 && index < labsTable.getItems().size() && labsTable.getSelectionModel().isSelected(index)  ) {
                             labsTable.getSelectionModel().clearSelection();
                             resetFields();
+                            resetError();
                             e.consume();
                         }
                 });
                 return row;
             });
-    }
-
-    private List<Laboratory> getAllLaboratories() {
-        return laboratoryClient.getLaboratories();
     }
 
     @FXML
@@ -175,7 +176,6 @@ public class LabsViewAdmin {
 
     @FXML
     private void deleteButtonClicked(ActionEvent event) {
-        //TODO: check if deleting labs with associated attendance or assignments
         Laboratory selectedLab = labsTable.getSelectionModel().getSelectedItem();
         if (selectedLab == null) {
             errorLabel.setText("Must first select a lab from the table!");

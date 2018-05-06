@@ -1,6 +1,6 @@
 package model;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class Submission {
     private int id;
@@ -69,5 +69,9 @@ public class Submission {
 
     public String getStudentName() {
         return this.student.getName();
+    }
+
+    public String getStudentGroup() {
+        return this.student.getGroup();
     }
 }

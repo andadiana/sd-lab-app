@@ -7,4 +7,5 @@ public interface ClientProvider {
     public AssignmentClient getAssignmentClient();
     public AttendanceClient getAttendanceClient();
     public SubmissionClient getSubmissionClient();
+    public LoginClient getLoginClient();
 }

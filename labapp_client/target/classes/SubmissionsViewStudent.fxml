@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SubmissionsViewStudent">
+    <children>
+        <TableView fx:id="submissionsTable" layoutX="81.0" layoutY="55.0" onMouseClicked="#submissionsTableClicked" prefHeight="197.00009999999747" prefWidth="237.0">
+            <columns>
+                <TableColumn fx:id="assignmentNameColumn" prefWidth="75.0" text="Assignment Name" />
+                <TableColumn fx:id="dateColumn" prefWidth="75.0" text="Submission Date" />
+                <TableColumn fx:id="gradeColumn" prefWidth="75.0" text="Grade" />
+            </columns>
+        </TableView>
+        <ComboBox fx:id="assignmentComboBox" layoutX="125.0" layoutY="285.0" prefWidth="150.0" />
+        <TextArea fx:id="descriptionTextArea" layoutX="301.0" layoutY="259.0" prefHeight="123.0" prefWidth="280.0000999999975" promptText="Submission description" wrapText="true" />
+        <Button fx:id="submitButton" layoutX="381.0" layoutY="199.0" mnemonicParsing="false" onAction="#submitButtonClicked" text="New submission" />
+        <Button fx:id="updateButton" layoutX="387.0" layoutY="154.0" mnemonicParsing="false" onAction="#updateButtonClicked" text="Update" />
+        <Label fx:id="errorLabel" layoutX="417.0" layoutY="64.0" text="Label" />
+    </children>
+</AnchorPane>

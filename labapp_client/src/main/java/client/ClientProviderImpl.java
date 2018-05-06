@@ -10,6 +10,7 @@ public class ClientProviderImpl implements ClientProvider {
     private AssignmentClient assignmentClient;
     private AttendanceClient attendanceClient;
     private SubmissionClient submissionClient;
+    public LoginClient loginClient;
 
     private ObjectMapper objectMapper;
     private ModelMapper modelMapper;
@@ -57,5 +58,13 @@ public class ClientProviderImpl implements ClientProvider {
             this.submissionClient = new SubmissionClientImpl(objectMapper, modelMapper);
         }
         return submissionClient;
+    }
+
+    @Override
+    public LoginClient getLoginClient() {
+        if (loginClient == null) {
+            this.loginClient = new LoginClientImpl(objectMapper, modelMapper);
+        }
+        return loginClient;
     }
 }

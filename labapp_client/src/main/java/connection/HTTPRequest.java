@@ -32,7 +32,7 @@ public class HTTPRequest {
         }
     }
 
-    public static void sendPost(String path, String json) throws Exception {
+    public static String sendPost(String path, String json) throws Exception {
         CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost("http://localhost:8080" + path);
         StringEntity entity = new StringEntity(json);
@@ -46,6 +46,16 @@ public class HTTPRequest {
             client.close();
             throw new Exception("Request failed!");
         }
+
+        BufferedReader rd = new BufferedReader(
+                new InputStreamReader(response.getEntity().getContent()));
+
+        StringBuffer result = new StringBuffer();
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
+        }
+        return result.toString();
     }
 
     public static void sendPut(String path, String json) throws Exception {

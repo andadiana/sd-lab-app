@@ -6,14 +6,23 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controller.AssignmentsViewAdmin">
+<AnchorPane prefHeight="472.0" prefWidth="604.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AssignmentsViewAdmin">
     <children>
-        <TableView fx:id="assignmentsTable" layoutX="256.0" layoutY="66.0" prefHeight="197.00009999999747" prefWidth="237.0">
+        <TableView fx:id="assignmentsTable" layoutX="60.0" layoutY="31.0" onMouseClicked="#assignmentsTableClicked" prefHeight="197.00009999999747" prefWidth="237.0">
             <columns>
-                <TableColumn prefWidth="75.0" text="Assignment Name" fx:id="assignmentNameColumn" />
-                <TableColumn prefWidth="75.0" text="Deadline" fx:id="deadlineColumn" />
-                <TableColumn prefWidth="75.0" text="Lab number" fx:id="labNumberColumn" />
+                <TableColumn fx:id="assignmentNameColumn" prefWidth="75.0" text="Assignment Name" />
+                <TableColumn fx:id="deadlineColumn" prefWidth="75.0" text="Deadline" />
+                <TableColumn fx:id="labNumberColumn" prefWidth="75.0" text="Lab number" />
             </columns>
         </TableView>
+        <TextField fx:id="nameTextField" layoutX="58.0" layoutY="263.0" prefHeight="23.0" prefWidth="184.0" />
+        <TextArea fx:id="descriptionTextArea" layoutX="276.0" layoutY="263.0" prefHeight="123.0" prefWidth="280.0000999999975" wrapText="true" />
+        <Button fx:id="addButton" layoutX="258.0" layoutY="411.0" mnemonicParsing="false" onAction="#addButtonClicked" text="Add" />
+        <Button fx:id="updateButton" layoutX="352.0" layoutY="411.0" mnemonicParsing="false" onAction="#updateButtonClicked" text="Update" />
+        <Button fx:id="deleteButton" layoutX="426.0" layoutY="411.0" mnemonicParsing="false" onAction="#deleteButtonClicked" text="Delete" />
+        <DatePicker fx:id="datePicker" layoutX="51.0" layoutY="328.0" />
+        <Label fx:id="errorLabel" layoutX="416.0" layoutY="166.0" text="Label" />
+      <ComboBox fx:id="labComboBox" layoutX="60.0" layoutY="374.0" prefWidth="150.0" />
+      <Button fx:id="gradesButton" layoutX="354.0" layoutY="42.0" mnemonicParsing="false" onAction="#gradesButtonClicked" text="Grades" />
     </children>
 </AnchorPane>
