@@ -29,8 +29,10 @@ public class LoginController {
     public ResponseEntity logIn(@RequestBody LoginRequestDTO loginRequest) {
         try {
             Role role = userService.logIn(loginRequest.getEmail(), loginRequest.getPassword());
+            User user = userService.getByEmail(loginRequest.getEmail());
             LoginResponseDTO responseDTO = new LoginResponseDTO();
             responseDTO.setRole(role.toString());
+            responseDTO.setUserId(user.getId());
             if (userService.isPasswordSet(loginRequest.getEmail())) {
                 responseDTO.setPasswordSet(true);
             }

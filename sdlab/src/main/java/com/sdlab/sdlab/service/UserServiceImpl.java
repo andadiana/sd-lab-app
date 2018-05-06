@@ -40,6 +40,10 @@ public class UserServiceImpl implements UserService {
         throw new LoginException("Incorrect password!");
     }
 
+    public User getByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     @Override
     public boolean isPasswordSet(String email) {
         User u = userRepository.findByEmail(email);
