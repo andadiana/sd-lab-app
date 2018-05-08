@@ -5,5 +5,5 @@ import model.Role;
 
 public interface LoginClient {
 
-    public LoginResponseDTO login(String username, String password);
+    public LoginResponseDTO login(String username, String password) throws Exception;
 }

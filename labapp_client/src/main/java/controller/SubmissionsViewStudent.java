@@ -15,6 +15,7 @@ import javafx.util.StringConverter;
 import model.Assignment;
 import model.Student;
 import model.Submission;
+import model.UserCredentials;
 
 import java.sql.Date;
 import java.util.List;
@@ -53,14 +54,16 @@ public class SubmissionsViewStudent {
     private ObservableList<Submission> submissionsObs;
 
     private Student currentStudent;
+    private UserCredentials userCredentials;
 
 
-    public void initData(ClientProvider clientProvider, Student student) {
+    public void initData(ClientProvider clientProvider, Student student, UserCredentials userCredentials) {
         submissionClient = clientProvider.getSubmissionClient();
         assignmentClient = clientProvider.getAssignmentClient();
         studentClient = clientProvider.getStudentClient();
 
         currentStudent = student;
+        this.userCredentials = userCredentials;
 
         initializeSubmissionsTable();
         initializeAssignmentComboBox();
@@ -75,14 +78,21 @@ public class SubmissionsViewStudent {
 
     private void resetFields() {
         descriptionTextArea.clear();
-        assignmentComboBox.setValue(assignmentsObs.get(0));
+        if (assignmentsObs.size() > 0) {
+            assignmentComboBox.setValue(assignmentsObs.get(0));
+        }
     }
 
     private void updateTableContents() {
-        List<Submission> submissions = submissionClient.getSubmissionsForStudent(currentStudent);
-        if (submissions != null) {
-            submissionsObs = FXCollections.observableArrayList(submissions);
-            submissionsTable.setItems(submissionsObs);
+        try {
+            List<Submission> submissions = submissionClient.getSubmissionsForStudent(currentStudent, userCredentials);
+            if (submissions != null) {
+                submissionsObs = FXCollections.observableArrayList(submissions);
+                submissionsTable.setItems(submissionsObs);
+            }
+            resetError();
+        } catch (Exception e) {
+            errorLabel.setText(e.getMessage());
         }
     }
 
@@ -109,10 +119,15 @@ public class SubmissionsViewStudent {
     }
 
     private void updateAssignmentComboBox() {
-        List<Assignment> assignments = assignmentClient.getAssignments();
-        if (assignments != null) {
-            assignmentsObs = FXCollections.observableArrayList(assignments);
-            assignmentComboBox.setItems(assignmentsObs);
+        try {
+            List<Assignment> assignments = assignmentClient.getAssignments(userCredentials);
+            if (assignments != null) {
+                assignmentsObs = FXCollections.observableArrayList(assignments);
+                assignmentComboBox.setItems(assignmentsObs);
+                resetError();
+            }
+        }catch (Exception e) {
+            errorLabel.setText(e.getMessage());
         }
     }
 
@@ -126,7 +141,7 @@ public class SubmissionsViewStudent {
         assignmentComboBox.setConverter(new StringConverter<Assignment>() {
             @Override
             public String toString(Assignment assignment) {
-                return "Assignment: " + assignment.getName();
+                return assignment.getName();
             }
 
             @Override
@@ -142,6 +157,7 @@ public class SubmissionsViewStudent {
         Submission submission = submissionsTable.getSelectionModel().getSelectedItem();
         if (submission != null) {
             descriptionTextArea.setText(submission.getDescription());
+            assignmentComboBox.setValue(submission.getAssignment());
         }
 
     }
@@ -151,9 +167,17 @@ public class SubmissionsViewStudent {
 
         try {
             Submission submission = parseSubmission();
-            submissionClient.createSubmission(submission);
-            submissionsObs.add(submission);
-            resetError();
+            Assignment selectedAssignment = assignmentComboBox.getSelectionModel().getSelectedItem();
+            long n = submissionsObs.stream().filter(s -> s.getAssignment().getId() == selectedAssignment.getId()).count();
+            if (n != 0) {
+                errorLabel.setText("You already have a submission for assignment " + selectedAssignment.getName() + "!");
+            }
+            else {
+                submissionClient.createSubmission(submission, userCredentials);
+//            submissionsObs.add(submission);
+                updateTableContents();
+                resetError();
+            }
         } catch (Exception e) {
             errorLabel.setText(e.getMessage());
         }
@@ -167,10 +191,11 @@ public class SubmissionsViewStudent {
         }
         else {
             try {
-                submissionsObs.remove(selectedSubmission);
+
                 Submission submission = parseSubmission();
                 submission.setId(selectedSubmission.getId());
-                submissionClient.updateSubmission(submission);
+                submissionClient.updateSubmission(submission, userCredentials);
+                submissionsObs.remove(selectedSubmission);
                 submissionsObs.add(submission);
                 resetError();
             } catch (Exception e) {
@@ -188,6 +213,7 @@ public class SubmissionsViewStudent {
         if (currentDate.after(selectedAssignment.getDeadline())) {
             throw new Exception("Cannot submit assignment past the deadline!");
         }
+
         Submission submission = new Submission();
         submission.setDescription(descriptionTextArea.getText());
         submission.setDate(currentDate);

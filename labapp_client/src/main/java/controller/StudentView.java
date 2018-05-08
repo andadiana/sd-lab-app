@@ -57,7 +57,7 @@ public class StudentView {
         this.userCredentials = userCredentials;
         this.currentStudent = student;
 
-        nameLabel.setText(currentStudent.getName());
+        nameLabel.setText("Welcome, " + currentStudent.getName() + "!");
     }
 
     @FXML
@@ -68,7 +68,7 @@ public class StudentView {
             labsViewStudent = loader.load();
 
             labsViewStudentController = loader.getController();
-            labsViewStudentController.initData(clientProvider);
+            labsViewStudentController.initData(clientProvider, userCredentials);
         }
         else {
             labsViewStudentController.updateTableContents();
@@ -87,7 +87,7 @@ public class StudentView {
             assignmentsViewStudent = loader.load();
 
             assignmentsViewStudentController = loader.getController();
-            assignmentsViewStudentController.initData(clientProvider);
+            assignmentsViewStudentController.initData(clientProvider, userCredentials);
         }
         else {
             assignmentsViewStudentController.updateTableContents();
@@ -104,7 +104,7 @@ public class StudentView {
             submissionsViewStudent = loader.load();
 
             submissionsViewStudentController = loader.getController();
-            submissionsViewStudentController.initData(clientProvider, currentStudent);
+            submissionsViewStudentController.initData(clientProvider, currentStudent, userCredentials);
         }
         else {
             submissionsViewStudentController.updateData();
@@ -124,7 +124,7 @@ public class StudentView {
 
         Stage stage = new Stage();
         stage.setTitle("Lab Application");
-        stage.setScene(new Scene(root, 800, 400));
+        stage.setScene(new Scene(root, 380, 280));
         stage.show();
     }
 

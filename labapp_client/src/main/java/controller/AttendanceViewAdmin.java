@@ -21,6 +21,7 @@ import model.*;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class AttendanceViewAdmin {
@@ -66,11 +67,14 @@ public class AttendanceViewAdmin {
     private ObservableList<Laboratory> labsObs;
     private ObservableList<Student> studentsObs;
 
+    private UserCredentials userCredentials;
 
-    public void initData(ClientProvider clientProvider) {
+    public void initData(ClientProvider clientProvider, UserCredentials userCredentials) {
         attendanceClient = clientProvider.getAttendanceClient();
         labClient = clientProvider.getLaboratoryClient();
         studentClient = clientProvider.getStudentClient();
+
+        this.userCredentials = userCredentials;
 
         initializeAttendanceTable();
         initializeLabComboBox();
@@ -90,26 +94,56 @@ public class AttendanceViewAdmin {
     }
 
     private void updateTableContents() {
-        List<Attendance> attendance = attendanceClient.getAttendance();
-        if (attendance != null) {
-             attendanceObs = FXCollections.observableArrayList(attendance);
-            attendanceTable.setItems(attendanceObs);
+        try {
+            List<Attendance> attendance = attendanceClient.getAttendance(userCredentials);
+            if (attendance != null) {
+                attendanceObs = FXCollections.observableArrayList(attendance);
+                attendanceTable.setItems(attendanceObs);
+                resetError();
+            }
+        } catch (Exception e) {
+            errorLabel.setText(e.getMessage());
+        }
+    }
+
+    private void updateTableContents(Laboratory lab) {
+        try {
+            List<Attendance> attendance = attendanceClient.getAttendance(userCredentials);
+            if (attendance != null) {
+                List<Attendance> attendanceFiltered = attendance.stream()
+                        .filter(a -> a.getLaboratory().getId() == lab.getId()).collect(Collectors.toList());
+                attendanceObs = FXCollections.observableArrayList(attendanceFiltered);
+                attendanceTable.setItems(attendanceObs);
+                resetError();
+            }
+        } catch (Exception e) {
+            errorLabel.setText(e.getMessage());
         }
     }
 
     private void updateLabComboBox() {
-        List<Laboratory> laboratories = labClient.getLaboratories();
-        if (laboratories != null) {
-            labsObs = FXCollections.observableArrayList(laboratories);
-            labComboBox.setItems(labsObs);
+        try {
+            List<Laboratory> laboratories = labClient.getLaboratories(userCredentials);
+            if (laboratories != null) {
+                labsObs = FXCollections.observableArrayList(laboratories);
+                labComboBox.setItems(labsObs);
+                resetError();
+            }
+        } catch (Exception e) {
+            errorLabel.setText(e.getMessage());
         }
     }
 
     private void updateStudentComboBox() {
-        List<Student> students = studentClient.getStudents();
-        if (students != null) {
-            studentsObs = FXCollections.observableArrayList(students);
-            studentComboBox.setItems(studentsObs);
+        try {
+            List<Student> students = studentClient.getStudents(userCredentials);
+            if (students != null) {
+                studentsObs = FXCollections.observableArrayList(students);
+                studentComboBox.setItems(studentsObs);
+                resetError();
+            }
+        }catch (Exception e) {
+            errorLabel.setText(e.getMessage());
         }
     }
 
@@ -168,13 +202,24 @@ public class AttendanceViewAdmin {
     }
 
     @FXML
+    private void labComboBoxClicked(ActionEvent event) {
+        Laboratory lab = labComboBox.getSelectionModel().getSelectedItem();
+        if (lab != null) {
+            updateTableContents(lab);
+        }
+    }
+
+    @FXML
     private void attendanceTableClicked (MouseEvent event) {
         Attendance attendance = attendanceTable.getSelectionModel().getSelectedItem();
         if (attendance != null) {
             attendedCheckBox.setSelected(attendance.isAttended());
             Student selectedStudent = studentsObs.stream()
                     .filter(s -> s.getId() == attendance.getStudent().getId()).findFirst().get();
+            Laboratory selectedLab = labsObs.stream()
+                    .filter(l -> l.getId() == attendance.getLaboratory().getId()).findFirst().get();
             studentComboBox.setValue(selectedStudent);
+            labComboBox.setValue(selectedLab);
         }
     }
 
@@ -182,9 +227,18 @@ public class AttendanceViewAdmin {
     private void addButtonClicked(ActionEvent event) {
         try {
             Attendance attendance = parseAttendanceFields();
-            attendanceClient.createAttendance(attendance);
-            attendanceObs.add(attendance);
-            resetError();
+            long n = attendanceObs.stream()
+                    .filter(a -> a.getLaboratory().getId() == labComboBox.getValue().getId() &&
+                            a.getStudent().getId() == studentComboBox.getValue().getId()).count();
+            if (n != 0) {
+                errorLabel.setText("There is already an attendance entry for this lab for the selected student!");
+            }
+            else {
+                attendanceClient.createAttendance(attendance, userCredentials);
+//            attendanceObs.add(attendance);
+                updateTableContents(labComboBox.getValue());
+                resetError();
+            }
         } catch (Exception e) {
             errorLabel.setText(e.getMessage());
         }
@@ -198,10 +252,11 @@ public class AttendanceViewAdmin {
         }
         else {
             try {
-                attendanceObs.remove(selectedAttendance);
+
                 Attendance attendance = parseAttendanceFields();
+                attendanceObs.remove(selectedAttendance);
                 attendance.setId(selectedAttendance.getId());
-                attendanceClient.updateAttendance(attendance);
+                attendanceClient.updateAttendance(attendance, userCredentials);
                 attendanceObs.add(attendance);
                 resetError();
             } catch (Exception e) {
@@ -217,8 +272,13 @@ public class AttendanceViewAdmin {
             errorLabel.setText("Must first select attendance from the table!");
         }
         else {
-            attendanceClient.deleteAttendance(selectedAttendance.getId());
-            attendanceObs.remove(selectedAttendance);
+            try {
+                attendanceClient.deleteAttendance(selectedAttendance.getId(), userCredentials);
+                attendanceObs.remove(selectedAttendance);
+                resetError();
+            } catch (Exception e) {
+                errorLabel.setText(e.getMessage());
+            }
         }
     }
 
@@ -227,6 +287,7 @@ public class AttendanceViewAdmin {
                 studentComboBox.getValue() == null) {
             throw new Exception("All fields must be selected (lab and student!");
         }
+
         Attendance attendance = new Attendance();
         attendance.setStudent(studentComboBox.getValue());
         attendance.setAttended(attendedCheckBox.isSelected());

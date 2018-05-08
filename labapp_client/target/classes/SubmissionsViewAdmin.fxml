@@ -6,21 +6,24 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SubmissionsViewAdmin">
+<AnchorPane prefHeight="540.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SubmissionsViewAdmin">
     <children>
-        <TableView fx:id="submissionsTable" layoutX="81.0" layoutY="55.0" onMouseClicked="#submissionsTableClicked" prefHeight="197.00009999999747" prefWidth="237.0">
+        <TableView fx:id="submissionsTable" layoutX="14.0" layoutY="78.0" onMouseClicked="#submissionsTableClicked" prefHeight="212.0" prefWidth="586.0">
             <columns>
-                <TableColumn fx:id="assignmentNameColumn" prefWidth="75.0" text="Assignment Name" />
-                <TableColumn fx:id="studentNameColumn" prefWidth="75.0" text="Student Name" />
-                <TableColumn fx:id="dateColumn" prefWidth="75.0" text="Submission Date" />
-                <TableColumn fx:id="gradeColumn" prefWidth="75.0" text="Grade" />
+                <TableColumn fx:id="assignmentNameColumn" prefWidth="160.0" text="Assignment Name" />
+                <TableColumn fx:id="studentNameColumn" prefWidth="186.0" text="Student Name" />
+                <TableColumn fx:id="dateColumn" prefWidth="157.0" text="Submission Date" />
+                <TableColumn fx:id="gradeColumn" prefWidth="67.0" text="Grade" />
             </columns>
         </TableView>
-        <ComboBox fx:id="assignmentComboBox" layoutX="111.0" layoutY="14.0" prefWidth="150.0" />
-        <TextField fx:id="studentNameTextField" layoutX="58.0" layoutY="282.0" prefHeight="23.0" prefWidth="184.0" promptText="Student Name" />
-        <TextArea fx:id="descriptionTextArea" layoutX="288.0" layoutY="256.0" prefHeight="123.0" prefWidth="280.0000999999975" promptText="Submission description" wrapText="true" />
-        <TextField fx:id="gradeTextField" layoutX="58.0" layoutY="326.0" prefHeight="23.0" prefWidth="184.0" promptText="Grade" />
-        <Button fx:id="gradeButton" layoutX="390.0" layoutY="159.0" mnemonicParsing="false" onAction="#gradeButtonClicked" text="Grade" />
-      <Label fx:id="errorLabel" layoutX="430.0" layoutY="67.0" text="Label" />
+        <ComboBox fx:id="assignmentComboBox" layoutX="129.0" layoutY="44.0" onAction="#assignmentComboBoxClicked" prefHeight="25.0" prefWidth="224.0" />
+        <TextField fx:id="studentNameTextField" layoutX="94.0" layoutY="318.0" prefHeight="25.0" prefWidth="246.0" promptText="Student Name" />
+        <TextArea fx:id="descriptionTextArea" layoutX="20.0" layoutY="358.0" prefHeight="170.0" prefWidth="586.0" promptText="Submission description" wrapText="true" />
+        <TextField fx:id="gradeTextField" layoutX="423.0" layoutY="316.0" prefHeight="25.0" prefWidth="101.0" promptText="Grade" />
+        <Button fx:id="gradeButton" layoutX="539.0" layoutY="315.0" mnemonicParsing="false" onAction="#gradeButtonClicked" text="Grade" />
+      <Label fx:id="errorLabel" layoutX="71.0" layoutY="289.0" prefHeight="15.0" prefWidth="503.0" text="Label" />
+      <Label layoutX="24.0" layoutY="324.0" text="Student" />
+      <Label layoutX="367.0" layoutY="323.0" text="Grade" />
+      <Label layoutX="40.0" layoutY="49.0" text="Assignment" />
     </children>
 </AnchorPane>

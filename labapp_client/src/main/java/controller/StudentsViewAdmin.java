@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import model.Student;
+import model.UserCredentials;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -60,9 +61,12 @@ public class StudentsViewAdmin {
     private StudentClient studentClient;
     private ObservableList<Student> studentsObs;
 
+    private UserCredentials userCredentials;
 
-    public void initData(ClientProvider clientProvider) {
+
+    public void initData(ClientProvider clientProvider, UserCredentials userCredentials) {
         studentClient = clientProvider.getStudentClient();
+        this.userCredentials = userCredentials;
 
         initializeStudentsTable();
         nameTextField.setPromptText("Student name");
@@ -74,10 +78,15 @@ public class StudentsViewAdmin {
     }
 
     public void updateTableContents() {
-        List<Student> students = studentClient.getStudents();
-        if (students != null) {
-            studentsObs = FXCollections.observableArrayList(students);
-            studentsTable.setItems(studentsObs);
+        try {
+            List<Student> students = studentClient.getStudents(userCredentials);
+            if (students != null) {
+                studentsObs = FXCollections.observableArrayList(students);
+                studentsTable.setItems(studentsObs);
+                resetError();
+            }
+        } catch (Exception e) {
+            errorLabel.setText(e.getMessage());
         }
     }
 
@@ -132,23 +141,35 @@ public class StudentsViewAdmin {
         errorLabel.setText("");
     }
 
+    private boolean existingStudentEmail(Student student) {
+        long n = studentsObs.stream().filter(s -> s.getEmail().equals(student.getEmail())).count();
+        if (n == 0) {
+            return false;
+        }
+        return true;
+    }
 
     @FXML
     private void addButtonClicked(ActionEvent event) {
         try {
             Student student = parseStudentFields();
-            String token = studentClient.createStudent(student);
-            if (token == null) {
-                errorLabel.setText("Unsuccessful create operation!");
+            if (existingStudentEmail(student)) {
+                errorLabel.setText("Email already exists!");
             }
             else {
-                studentsObs.add(student);
-                tokenLabel.setVisible(true);
-                tokenTextField.setVisible(true);
-                tokenLabel.setText("Token created for student " + student.getName() + " is:");
-                tokenTextField.setText(token);
+                String token = studentClient.createStudent(student, userCredentials);
+                if (token == null) {
+                    errorLabel.setText("Unsuccessful create operation!");
+                } else {
+                    studentsObs.add(student);
+                    tokenLabel.setVisible(true);
+                    tokenTextField.setVisible(true);
+                    tokenLabel.setText("Token created for student " + student.getName() + " is:");
+                    tokenTextField.setText(token);
+                    updateTableContents();
+                }
+                resetError();
             }
-            resetError();
         } catch (Exception e) {
             errorLabel.setText(e.getMessage());
         }
@@ -163,10 +184,11 @@ public class StudentsViewAdmin {
         }
         else {
             try {
-                studentsObs.remove(selectedStudent);
+
                 Student student = parseStudentFields();
+                studentsObs.remove(selectedStudent);
                 student.setId(selectedStudent.getId());
-                studentClient.updateStudent(student);
+                studentClient.updateStudent(student, userCredentials);
                 studentsObs.add(student);
                 resetError();
             } catch (Exception e) {
@@ -177,17 +199,20 @@ public class StudentsViewAdmin {
 
     @FXML
     private void deleteButtonClicked(ActionEvent event) {
-        //TODO: check if deleting student with associated attendance or submissions
         Student selectedStudent = studentsTable.getSelectionModel().getSelectedItem();
         if (selectedStudent == null) {
             errorLabel.setText("Must first select a student from the table!");
         }
         else {
-            studentClient.deleteStudent(selectedStudent.getId());
-            studentsObs.remove(selectedStudent);
-            resetFields();
-            resetError();
-            resetTokenFields();
+            try {
+                studentClient.deleteStudent(selectedStudent.getId(), userCredentials);
+                studentsObs.remove(selectedStudent);
+                resetFields();
+                resetError();
+                resetTokenFields();
+            } catch (Exception e) {
+                errorLabel.setText(e.getMessage());
+            }
         }
     }
 
@@ -199,6 +224,9 @@ public class StudentsViewAdmin {
         }
         if (!validateGroupFormat(groupTextField.getText())) {
             throw new Exception("Incorrect group format! Must be 30---");
+        }
+        if (!validUsernameFormat(emailTextField.getText())) {
+            throw new Exception("Invalid email format!");
         }
         Student student = new Student();
         student.setEmail(emailTextField.getText());
@@ -212,6 +240,16 @@ public class StudentsViewAdmin {
         String GROUP_PATTERN = "^[0-9]{5}$";
         Pattern pattern = Pattern.compile(GROUP_PATTERN);
         Matcher matcher = pattern.matcher(group);
+        return matcher.matches();
+    }
+
+    private boolean validUsernameFormat(String username) {
+        String EMAIL_PATTERN =
+                "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+
+        Matcher matcher = pattern.matcher(username);
         return matcher.matches();
     }
 }

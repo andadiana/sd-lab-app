@@ -47,77 +47,106 @@ public class LoginView {
         clientProvider = new ClientProviderImpl();
         loginClient = clientProvider.getLoginClient();
         studentClient = clientProvider.getStudentClient();
+
+        resetError();
     }
 
 
     @FXML
     private void loginButtonClicked(ActionEvent event) throws IOException{
+        resetError();
+        System.out.println("LOGIN");
         if (validUsernameFormat(usernameField.getText())) {
             String username = usernameField.getText();
             String password = passwordField.getText();
-            LoginResponseDTO response = loginClient.login(username, password);
+            try {
+                LoginResponseDTO response = loginClient.login(username, password);
 
-            if (response == null) {
-                errorLabel.setText("Invalid credentials!");
-            }
-            else {
-                UserCredentials userCredentials = new UserCredentials();
-                userCredentials.setUsername(username);
-                userCredentials.setPassword(password);
-
-                if (response.getRole() == Role.ADMIN) {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminView.fxml"));
-                    Parent root = loader.load();
-                    Stage stage = new Stage();
-                    stage.setTitle("Admin view");
-                    stage.setScene(new Scene(root, 800, 400));
-                    stage.show();
-
-                    Stage stage1 = (Stage) loginButton.getScene().getWindow();
-                    stage1.close();
-
-                    AdminView adminView = loader.getController();
-                    adminView.initData(clientProvider, userCredentials);
+                if (response == null) {
+                    errorLabel.setText("Invalid credentials!");
                 }
+                else {
+                    UserCredentials userCredentials = new UserCredentials();
+                    userCredentials.setUsername(username);
+                    userCredentials.setPassword(password);
 
-                else if (response.getRole() == Role.STUDENT){
-                    if (response.isPasswordSet()) {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/StudentView.fxml"));
+                    if (response.getRole() == Role.ADMIN) {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminView.fxml"));
                         Parent root = loader.load();
                         Stage stage = new Stage();
-                        stage.setTitle("Student view");
-                        stage.setScene(new Scene(root, 800, 400));
+                        stage.setTitle("Admin view");
+                        stage.setScene(new Scene(root, 750, 540));
                         stage.show();
 
                         Stage stage1 = (Stage) loginButton.getScene().getWindow();
                         stage1.close();
 
-                        StudentView studentView = loader.getController();
-                        Student student = studentClient.getStudent(response.getUserId());
+                        AdminView adminView = loader.getController();
+                        adminView.initData(clientProvider, userCredentials);
+                    } else if (response.getRole() == Role.STUDENT) {
 
-                        studentView.initData(clientProvider, userCredentials, student);
+                        System.out.println("Is password set: " + response.isPasswordSet());
+                        if (response.isPasswordSet()) {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/StudentView.fxml"));
+                            Parent root = loader.load();
+
+                            StudentView studentView = loader.getController();
+                            try {
+                                Student student = studentClient.getStudent(response.getUserId(), userCredentials);
+
+                                studentView.initData(clientProvider, userCredentials, student);
+
+                                Stage stage = new Stage();
+                                stage.setTitle("Student view");
+                                stage.setScene(new Scene(root, 750, 540));
+                                stage.show();
+
+                                Stage stage1 = (Stage) loginButton.getScene().getWindow();
+                                stage1.close();
+
+                                resetError();
+                            } catch (Exception e) {
+                                errorLabel.setText(e.getMessage());
+                            }
+                        } else {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/SetNewPasswordView.fxml"));
+                            Parent root = loader.load();
+
+
+                            SetNewPasswordView setNewPasswordView = loader.getController();
+
+                            try {
+                                Student student = studentClient.getStudent(response.getUserId(), userCredentials);
+
+                                setNewPasswordView.initData(clientProvider, student, userCredentials);
+                                resetError();
+                                passwordField.clear();
+
+                                Stage stage = new Stage();
+                                stage.setTitle("Set new password view");
+                                stage.setScene(new Scene(root, 500, 400));
+                                stage.show();
+                            } catch (Exception e) {
+                                errorLabel.setText(e.getMessage());
+                            }
+                        }
                     }
-                    else {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/SetNewPasswordView.fxml"));
-                        Parent root = loader.load();
-                        Stage stage = new Stage();
-                        stage.setTitle("Set new password view");
-                        stage.setScene(new Scene(root, 800, 400));
-                        stage.show();
 
-                        SetNewPasswordView setNewPasswordView = loader.getController();
-
-                        Student student = studentClient.getStudent(response.getUserId());
-
-                        setNewPasswordView.initData(clientProvider, student);
-                    }
                 }
+                resetError();
+            } catch (Exception e) {
+//                errorLabel.setText(e.getMessage());
+                errorLabel.setText("Invalid credentials!");
             }
         }
         else {
             errorLabel.setText("Invalid email format!");
         }
 
+    }
+
+    private void resetError(){
+        errorLabel.setText("");
     }
 
     private boolean validUsernameFormat(String username) {

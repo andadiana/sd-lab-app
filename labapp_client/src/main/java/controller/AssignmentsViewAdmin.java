@@ -19,6 +19,7 @@ import javafx.util.StringConverter;
 import model.Assignment;
 import model.Laboratory;
 import model.Submission;
+import model.UserCredentials;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -72,10 +73,14 @@ public class AssignmentsViewAdmin {
     private ObservableList<Assignment> assignmentsObs;
     private ObservableList<Laboratory> labsObs;
 
-    public void initData(ClientProvider clientProvider) {
+    private UserCredentials userCredentials;
+
+    public void initData(ClientProvider clientProvider, UserCredentials userCredentials) {
         assignmentClient = clientProvider.getAssignmentClient();
         labClient = clientProvider.getLaboratoryClient();
         submissionClient = clientProvider.getSubmissionClient();
+
+        this.userCredentials = userCredentials;
 
         initializeAssignmentsTable();
         initializeLabComboBox();
@@ -91,18 +96,28 @@ public class AssignmentsViewAdmin {
     }
 
     private void updateTableContents() {
-        List<Assignment> assignments = assignmentClient.getAssignments();
-        if (assignments != null) {
-            assignmentsObs = FXCollections.observableArrayList(assignments);
-            assignmentsTable.setItems(assignmentsObs);
+        try {
+            List<Assignment> assignments = assignmentClient.getAssignments(userCredentials);
+            if (assignments != null) {
+                assignmentsObs = FXCollections.observableArrayList(assignments);
+                assignmentsTable.setItems(assignmentsObs);
+                resetError();
+            }
+        }catch (Exception e) {
+            errorLabel.setText(e.getMessage());
         }
     }
 
     private void updateComboBox() {
-        List<Laboratory> laboratories = labClient.getLaboratories();
-        if (laboratories != null) {
-            labsObs = FXCollections.observableArrayList(laboratories);
-            labComboBox.setItems(labsObs);
+        try {
+            List<Laboratory> laboratories = labClient.getLaboratories(userCredentials);
+            if (laboratories != null) {
+                labsObs = FXCollections.observableArrayList(laboratories);
+                labComboBox.setItems(labsObs);
+                resetError();
+            }
+        }catch (Exception e) {
+            errorLabel.setText(e.getMessage());
         }
     }
 
@@ -152,7 +167,9 @@ public class AssignmentsViewAdmin {
     private void resetFields() {
         nameTextField.clear();
         descriptionTextArea.clear();
-        labComboBox.setValue(labsObs.get(0));
+        if (labsObs.size() > 0) {
+            labComboBox.setValue(labsObs.get(0));
+        }
         datePicker.setValue(LocalDate.now());
     }
 
@@ -175,8 +192,9 @@ public class AssignmentsViewAdmin {
     private void addButtonClicked(ActionEvent event) {
         try {
             Assignment assignment = parseAssignmentFields();
-            assignmentClient.createAssignment(assignment);
-            assignmentsObs.add(assignment);
+            assignmentClient.createAssignment(assignment, userCredentials);
+//            assignmentsObs.add(assignment);
+            updateTableContents();
             resetError();
         } catch (Exception e) {
             errorLabel.setText(e.getMessage());
@@ -191,10 +209,11 @@ public class AssignmentsViewAdmin {
         }
         else {
             try {
-                assignmentsObs.remove(selectedAssignment);
+
                 Assignment assignment = parseAssignmentFields();
+                assignmentsObs.remove(selectedAssignment);
                 assignment.setId(selectedAssignment.getId());
-                assignmentClient.updateAssignment(assignment);
+                assignmentClient.updateAssignment(assignment, userCredentials);
                 assignmentsObs.add(assignment);
                 resetError();
             } catch (Exception e) {
@@ -210,8 +229,13 @@ public class AssignmentsViewAdmin {
             errorLabel.setText("Must first select an assignment from the table!");
         }
         else {
-            assignmentClient.deleteAssignment(selectedAssignment.getId());
-            assignmentsObs.remove(selectedAssignment);
+            try {
+                assignmentClient.deleteAssignment(selectedAssignment.getId(), userCredentials);
+                assignmentsObs.remove(selectedAssignment);
+                resetError();
+            } catch (Exception e) {
+                errorLabel.setText(e.getMessage());
+            }
         }
     }
 
@@ -222,18 +246,22 @@ public class AssignmentsViewAdmin {
             errorLabel.setText("Must select assignment from table!");
         }
         else {
-            List<Submission> submissions = submissionClient.getSubmissionsForAssignment(selectedAssignment);
-            resetError();
+            try {
+                List<Submission> submissions = submissionClient.getSubmissionsForAssignment(selectedAssignment, userCredentials);
+                resetError();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GradesView.fxml"));
-            Parent root = loader.load();
-            GradesView controller = loader.getController();
-            controller.initData(submissions, selectedAssignment);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/GradesView.fxml"));
+                Parent root = loader.load();
+                GradesView controller = loader.getController();
+                controller.initData(submissions, selectedAssignment);
 
-            Stage stage = new Stage();
-            stage.setTitle("Grades");
-            stage.setScene(new Scene(root, 450, 360));
-            stage.show();
+                Stage stage = new Stage();
+                stage.setTitle("Grades");
+                stage.setScene(new Scene(root, 450, 360));
+                stage.show();
+            } catch (Exception e){
+                errorLabel.setText(e.getMessage());
+            }
         }
     }
 

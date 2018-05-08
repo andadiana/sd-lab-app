@@ -6,21 +6,23 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AttendanceViewAdmin">
+<AnchorPane prefHeight="540.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AttendanceViewAdmin">
     <children>
-        <TableView fx:id="attendanceTable" layoutX="87.0" layoutY="72.0" onMouseClicked="#attendanceTableClicked" prefHeight="199.0" prefWidth="329.0">
+        <TableView fx:id="attendanceTable" layoutX="17.0" layoutY="63.0" onMouseClicked="#attendanceTableClicked" prefHeight="259.0" prefWidth="587.0">
             <columns>
-                <TableColumn fx:id="labNumberColumn" prefWidth="111.0" text="Lab Number" />
-                <TableColumn fx:id="studentNameColumn" prefWidth="119.0" text="Student Name" />
-                <TableColumn fx:id="attendedColumn" minWidth="0.0" text="Attended" />
+                <TableColumn fx:id="labNumberColumn" prefWidth="135.0" text="Lab Number" />
+                <TableColumn fx:id="studentNameColumn" prefWidth="336.0" text="Student Name" />
+                <TableColumn fx:id="attendedColumn" minWidth="0.0" prefWidth="97.0" text="Attended" />
             </columns>
         </TableView>
-        <ComboBox fx:id="labComboBox" layoutX="85.0" layoutY="14.0" prefWidth="150.0" />
-        <ComboBox fx:id="studentComboBox" layoutX="50.0" layoutY="292.0" prefWidth="150.0" />
-      <CheckBox fx:id="attendedCheckBox" layoutX="235.0" layoutY="296.0" mnemonicParsing="false" text="Attended" />
-        <Button fx:id="addButton" layoutX="476.0" layoutY="238.0" mnemonicParsing="false" onAction="#addButtonClicked" text="Add" />
-        <Button fx:id="updateButton" layoutX="465.0" layoutY="284.0" mnemonicParsing="false" onAction="#updateButtonClicked" text="Update" />
-        <Button fx:id="deleteButton" layoutX="466.0" layoutY="327.0" mnemonicParsing="false" onAction="#deleteButtonClicked" text="Delete" />
-      <Label fx:id="errorLabel" layoutX="480.0" layoutY="91.0" text="Label" />
+        <ComboBox fx:id="labComboBox" layoutX="139.0" layoutY="28.0" onAction="#labComboBoxClicked" prefHeight="25.0" prefWidth="223.0" />
+        <ComboBox fx:id="studentComboBox" layoutX="172.0" layoutY="386.0" prefWidth="150.0" />
+      <CheckBox fx:id="attendedCheckBox" layoutX="350.0" layoutY="386.0" mnemonicParsing="false" text="Attended" />
+        <Button fx:id="addButton" layoutX="166.0" layoutY="447.0" mnemonicParsing="false" onAction="#addButtonClicked" text="Add" />
+        <Button fx:id="updateButton" layoutX="230.0" layoutY="447.0" mnemonicParsing="false" onAction="#updateButtonClicked" text="Update" />
+        <Button fx:id="deleteButton" layoutX="320.0" layoutY="447.0" mnemonicParsing="false" onAction="#deleteButtonClicked" text="Delete" />
+      <Label fx:id="errorLabel" layoutX="87.0" layoutY="344.0" prefHeight="18.0" prefWidth="452.0" text="Label" />
+      <Label layoutX="49.0" layoutY="33.0" prefHeight="15.0" prefWidth="84.0" text="Laboratory" />
+      <Label layoutX="108.0" layoutY="391.0" text="Student" />
     </children>
 </AnchorPane>

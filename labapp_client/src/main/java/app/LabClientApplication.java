@@ -23,7 +23,7 @@ public class LabClientApplication extends Application {
 
         stage = primaryStage;
         stage.setTitle("Lab Application");
-        stage.setScene(new Scene(root, 800, 400));
+        stage.setScene(new Scene(root, 380, 280));
         stage.show();
     }
 

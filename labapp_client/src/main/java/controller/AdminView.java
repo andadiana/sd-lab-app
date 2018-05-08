@@ -73,7 +73,7 @@ public class AdminView {
             studentsViewAdmin = loader.load();
 
             studentsViewAdminController = loader.getController();
-            studentsViewAdminController.initData(clientProvider);
+            studentsViewAdminController.initData(clientProvider, userCredentials);
         }
         else {
             studentsViewAdminController.updateTableContents();
@@ -91,7 +91,7 @@ public class AdminView {
             labsViewAdmin = loader.load();
 
             labsViewAdminController = loader.getController();
-            labsViewAdminController.initData(clientProvider);
+            labsViewAdminController.initData(clientProvider, userCredentials);
         }
         else {
             labsViewAdminController.updateTableContents();
@@ -109,7 +109,7 @@ public class AdminView {
             assignmentsViewAdmin = loader.load();
 
             assignmentsViewAdminController = loader.getController();
-            assignmentsViewAdminController.initData(clientProvider);
+            assignmentsViewAdminController.initData(clientProvider, userCredentials);
         }
         else {
             assignmentsViewAdminController.updateData();
@@ -126,7 +126,7 @@ public class AdminView {
             attendanceViewAdmin = loader.load();
 
             attendanceViewAdminController = loader.<AttendanceViewAdmin>getController();
-            attendanceViewAdminController.initData(clientProvider);
+            attendanceViewAdminController.initData(clientProvider, userCredentials);
         }
         else {
             attendanceViewAdminController.updateData();
@@ -143,7 +143,7 @@ public class AdminView {
             submissionsViewAdmin = loader.load();
 
             submissionsViewAdminController = loader.<SubmissionsViewAdmin>getController();
-            submissionsViewAdminController.initData(clientProvider);
+            submissionsViewAdminController.initData(clientProvider, userCredentials);
         }
         else {
             submissionsViewAdminController.updateData();
@@ -163,7 +163,7 @@ public class AdminView {
 
         Stage stage = new Stage();
         stage.setTitle("Lab Application");
-        stage.setScene(new Scene(root, 800, 400));
+        stage.setScene(new Scene(root, 380, 280));
         stage.show();
     }
 

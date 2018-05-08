@@ -19,6 +19,7 @@ import javafx.util.StringConverter;
 import model.Assignment;
 import model.Laboratory;
 import model.Submission;
+import model.UserCredentials;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -51,13 +52,19 @@ public class AssignmentsViewStudent {
     @FXML
     private TextField labTextField;
 
+    @FXML
+    private Label errorLabel;
+
 
     private AssignmentClient assignmentClient;
 
     private ObservableList<Assignment> assignmentsObs;
 
-    public void initData(ClientProvider clientProvider) {
+    private UserCredentials userCredentials;
+
+    public void initData(ClientProvider clientProvider, UserCredentials userCredentials) {
         assignmentClient = clientProvider.getAssignmentClient();
+        this.userCredentials = userCredentials;
 
         initializeAssignmentsTable();
 
@@ -65,10 +72,15 @@ public class AssignmentsViewStudent {
     }
 
     public void updateTableContents() {
-        List<Assignment> assignments = assignmentClient.getAssignments();
-        if (assignments != null) {
-            assignmentsObs = FXCollections.observableArrayList(assignments);
-            assignmentsTable.setItems(assignmentsObs);
+        try {
+            List<Assignment> assignments = assignmentClient.getAssignments(userCredentials);
+            if (assignments != null) {
+                assignmentsObs = FXCollections.observableArrayList(assignments);
+                assignmentsTable.setItems(assignmentsObs);
+                resetError();
+            }
+        }catch (Exception e) {
+            errorLabel.setText(e.getMessage());
         }
     }
 
@@ -99,6 +111,10 @@ public class AssignmentsViewStudent {
         descriptionTextArea.clear();
         datePicker.setValue(LocalDate.now());
         labTextField.clear();
+    }
+
+    private void resetError(){
+        errorLabel.setText("");
     }
 
     @FXML

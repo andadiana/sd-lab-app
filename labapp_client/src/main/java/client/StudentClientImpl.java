@@ -8,6 +8,7 @@ import dto.request.StudentRequestDTO;
 import dto.response.StudentCreationResponseDTO;
 import dto.response.StudentResponseDTO;
 import model.Student;
+import model.UserCredentials;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
@@ -25,25 +26,25 @@ public class StudentClientImpl implements StudentClient {
     }
 
     @Override
-    public List<Student> getStudents() {
-        try {
-            String jsonResponse = HTTPRequest.sendGet("/students");
+    public List<Student> getStudents(UserCredentials userCredentials) throws Exception{
+//        try {
+            String jsonResponse = HTTPRequest.sendGet("/students", userCredentials);
 
             System.out.println("RESPONSE: " + jsonResponse);
             List<StudentResponseDTO> studentsDTO = jsonMapper.readValue(jsonResponse, new TypeReference<List<StudentResponseDTO>>(){});
             return studentsDTO.stream().map(s -> modelMapper.map(s, Student.class)).collect(Collectors.toList());
 
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
+//        }catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
+//        return null;
     }
 
     @Override
-    public Student getStudent(int id) {
-        try {
+    public Student getStudent(int id, UserCredentials userCredentials) throws Exception{
+//        try {
             String path = "/students/" + id;
-            String jsonResponse = HTTPRequest.sendGet(path);
+            String jsonResponse = HTTPRequest.sendGet(path, userCredentials);
 
             System.out.println("RESPONSE: " + jsonResponse);
             StudentResponseDTO studentDTO = jsonMapper.readValue(jsonResponse, StudentResponseDTO.class);
@@ -51,63 +52,63 @@ public class StudentClientImpl implements StudentClient {
 
             return student;
 
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+//        }catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
     }
 
     @Override
-    public String createStudent(Student student) {
+    public String createStudent(Student student, UserCredentials userCredentials) throws Exception{
         //returns token or null if not successful
-        try {
+//        try {
             StudentRequestDTO studentDTO = modelMapper.map(student, StudentRequestDTO.class);
             String jsonString = jsonMapper.writeValueAsString(studentDTO);
 
-            String jsonResponse = HTTPRequest.sendPost("/students", jsonString);
+            String jsonResponse = HTTPRequest.sendPost("/students", jsonString, userCredentials);
             StudentCreationResponseDTO creationResponseDTO = jsonMapper.readValue(jsonResponse, StudentCreationResponseDTO.class);
             return creationResponseDTO.getToken();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
     }
 
     @Override
-    public void updateStudent(Student student) {
-        try {
+    public void updateStudent(Student student, UserCredentials userCredentials) throws Exception{
+//        try {
             StudentRequestDTO studentDTO = modelMapper.map(student, StudentRequestDTO.class);
             String jsonString = jsonMapper.writeValueAsString(studentDTO);
             String path = "/students/" + student.getId();
-            HTTPRequest.sendPut(path, jsonString);
+            HTTPRequest.sendPut(path, jsonString, userCredentials);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
-    public void deleteStudent(int id) {
-        try {
+    public void deleteStudent(int id, UserCredentials userCredentials) throws Exception{
+//        try {
             String path = "/students/" + id;
-            HTTPRequest.sendDelete(path);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            HTTPRequest.sendDelete(path, userCredentials);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
-    public boolean updatePassword(Student student, PasswordUpdateDTO passwordUpdateDTO) {
-        try {
+    public boolean updatePassword(Student student, PasswordUpdateDTO passwordUpdateDTO, UserCredentials userCredentials) throws Exception{
+//        try {
             String path = "/students/" + student.getId() + "/password";
             String jsonString = jsonMapper.writeValueAsString(passwordUpdateDTO);
-            HTTPRequest.sendPut(path, jsonString);
+            HTTPRequest.sendPut(path, jsonString, userCredentials);
 
             return true;
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return false;
+//        }catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
+//        return false;
     }
 }

@@ -9,6 +9,7 @@ import dto.response.AssignmentResponseDTO;
 import dto.response.LaboratoryResponseDTO;
 import model.Assignment;
 import model.Laboratory;
+import model.UserCredentials;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
@@ -27,10 +28,10 @@ public class AssignmentClientImpl implements AssignmentClient {
     }
 
     @Override
-    public List<Assignment> getAssignments() {
-        try {
+    public List<Assignment> getAssignments(UserCredentials userCredentials) throws Exception {
+//        try {
 
-            String jsonResponse = HTTPRequest.sendGet("/assignments");
+            String jsonResponse = HTTPRequest.sendGet("/assignments", userCredentials);
 
             System.out.println("RESPONSE: " + jsonResponse);
             List<AssignmentResponseDTO> assignmentsDTO = jsonMapper.readValue(jsonResponse,
@@ -38,75 +39,75 @@ public class AssignmentClientImpl implements AssignmentClient {
             List<Assignment> assignments = assignmentsDTO.stream()
                     .map(a -> modelMapper.map(a, Assignment.class)).collect(Collectors.toList());
             for (Assignment a: assignments) {
-                Laboratory lab = getLaboratory(a.getLaboratory().getId());
+                Laboratory lab = getLaboratory(a.getLaboratory().getId(), userCredentials);
                 a.setLaboratory(lab);
             }
             return assignments;
-
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
+//
+//        }catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
+//        return null;
     }
 
     @Override
-    public Assignment getAssignment(int id) {
-        try {
+    public Assignment getAssignment(int id, UserCredentials userCredentials) throws Exception{
+//        try {
             String path = "/assignments/" + id;
-            String jsonResponse = HTTPRequest.sendGet(path);
+            String jsonResponse = HTTPRequest.sendGet(path, userCredentials);
 
             System.out.println("RESPONSE: " + jsonResponse);
             AssignmentResponseDTO assignmentDTO = jsonMapper.readValue(jsonResponse, AssignmentResponseDTO.class);
             Assignment assignment = modelMapper.map(assignmentDTO, Assignment.class);
-            Laboratory lab = getLaboratory(assignment.getLaboratory().getId());
+            Laboratory lab = getLaboratory(assignment.getLaboratory().getId(), userCredentials);
             assignment.setLaboratory(lab);
 
             return assignment;
 
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+//        }catch (Exception e) {
+//            return null;
+//        }
+
     }
 
     @Override
-    public void createAssignment(Assignment assignment) {
-        try {
+    public void createAssignment(Assignment assignment, UserCredentials userCredentials) throws Exception{
+//        try {
             AssignmentRequestDTO assignmentDTO = modelMapper.map(assignment, AssignmentRequestDTO.class);
             String jsonString = jsonMapper.writeValueAsString(assignmentDTO);
-            HTTPRequest.sendPost("/assignments", jsonString);
+            HTTPRequest.sendPost("/assignments", jsonString, userCredentials);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
-    public void updateAssignment(Assignment assignment) {
-        try {
+    public void updateAssignment(Assignment assignment, UserCredentials userCredentials) throws Exception{
+//        try {
             AssignmentRequestDTO assignmentDTO = modelMapper.map(assignment, AssignmentRequestDTO.class);
             String jsonString = jsonMapper.writeValueAsString(assignmentDTO);
             String path = "/assignments/" + assignment.getId();
-            HTTPRequest.sendPut(path, jsonString);
+            HTTPRequest.sendPut(path, jsonString, userCredentials);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
-    public void deleteAssignment(int id) {
-        try {
+    public void deleteAssignment(int id, UserCredentials userCredentials) throws Exception{
+//        try {
             String path = "/assignments/" + id;
-            HTTPRequest.sendDelete(path);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            HTTPRequest.sendDelete(path, userCredentials);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
-    private Laboratory getLaboratory(int id) throws Exception{
+    private Laboratory getLaboratory(int id, UserCredentials userCredentials) throws Exception{
         String path = "/labs/" + id;
-        String jsonResponse = HTTPRequest.sendGet(path);
+        String jsonResponse = HTTPRequest.sendGet(path, userCredentials);
         System.out.println("RESPONSE: " + jsonResponse);
         LaboratoryResponseDTO labDTO = jsonMapper.readValue(jsonResponse, LaboratoryResponseDTO.class);
         return modelMapper.map(labDTO, Laboratory.class);

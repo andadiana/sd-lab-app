@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginView">
+<AnchorPane prefHeight="280.0" prefWidth="380.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginView">
    <children>
-      <TextField fx:id="usernameField" layoutX="215.0" layoutY="95.0" />
-      <Button fx:id="loginButton" layoutX="270.0" layoutY="256.0" mnemonicParsing="false" onAction="#loginButtonClicked" text="Button" />
-      <Label fx:id="errorLabel" layoutX="276.0" layoutY="212.0" text="Label" />
-      <PasswordField fx:id="passwordField" layoutX="216.0" layoutY="148.0" />
+      <TextField fx:id="usernameField" layoutX="100.0" layoutY="74.0" promptText="email" />
+      <PasswordField fx:id="passwordField" layoutX="99.0" layoutY="121.0" promptText="password" />
+      <Button fx:id="loginButton" layoutX="145.0" layoutY="202.0" mnemonicParsing="false" onAction="#loginButtonClicked" text="Log in" />
+      <Label fx:id="errorLabel" layoutX="73.0" layoutY="167.0" prefHeight="10.0" prefWidth="225.0" text="Label" />
+      <Label layoutX="71.0" layoutY="27.0" text="Laboratory Application">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

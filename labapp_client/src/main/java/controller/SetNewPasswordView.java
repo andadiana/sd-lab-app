@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.stage.Stage;
 import model.Student;
+import model.UserCredentials;
 
 public class SetNewPasswordView {
 
@@ -34,12 +35,15 @@ public class SetNewPasswordView {
     private StudentClient studentClient;
 
     private Student student;
+    private UserCredentials userCredentials;
 
-    public void initData(ClientProvider clientProvider, Student student) {
+    public void initData(ClientProvider clientProvider, Student student, UserCredentials userCredentials) {
         this.clientProvider = clientProvider;
         this.student = student;
 
         studentClient = clientProvider.getStudentClient();
+        this.userCredentials = userCredentials;
+        resetError();
 
     }
     @FXML
@@ -50,23 +54,33 @@ public class SetNewPasswordView {
             passwordUpdateDTO.setOldPassword(oldPasswordField.getText());
             passwordUpdateDTO.setNewPassword(newPasswordField.getText());
 
-            if (!studentClient.updatePassword(student, passwordUpdateDTO)) {
-                //unsuccessful update
-                errorLabel.setText("Invalid credentials!");
-            }
-            else {
-                Stage stage = (Stage) changePasswordButton.getScene().getWindow();
-                stage.close();
+            try {
+                if (!studentClient.updatePassword(student, passwordUpdateDTO, userCredentials)) {
+                    //unsuccessful update
+                    errorLabel.setText("Invalid credentials!");
+                } else {
+                    System.out.println("updated?");
+                    Stage stage = (Stage) changePasswordButton.getScene().getWindow();
+                    stage.close();
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Success");
-                alert.setContentText("Password changed successfully!");
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Success");
+                    alert.setContentText("Password changed successfully!");
 
-                alert.showAndWait();
+                    alert.showAndWait();
+                }
+                resetError();
+            } catch (Exception e) {
+//                errorLabel.setText(e.getMessage());
+                errorLabel.setText("Invalid password!");
             }
         }
         else {
             errorLabel.setText("New password fields must match!");
         }
+    }
+
+    private void resetError(){
+        errorLabel.setText("");
     }
 }

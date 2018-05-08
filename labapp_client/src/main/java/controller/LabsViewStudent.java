@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import model.Laboratory;
+import model.UserCredentials;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -51,13 +52,19 @@ public class LabsViewStudent {
     @FXML
     private DatePicker datePicker;
 
+    @FXML
+    private Label errorLabel;
+
 
     private LaboratoryClient laboratoryClient;
     private ObservableList<Laboratory> labObs;
 
+    private UserCredentials userCredentials;
 
-    public void initData(ClientProvider clientProvider) {
+
+    public void initData(ClientProvider clientProvider, UserCredentials userCredentials) {
         laboratoryClient = clientProvider.getLaboratoryClient();
+        this.userCredentials = userCredentials;
 
         initializeLabsTable();
         labNumberTextField.setPromptText("Lab number");
@@ -70,10 +77,15 @@ public class LabsViewStudent {
     }
 
     public void updateTableContents() {
-        List<Laboratory> labs = laboratoryClient.getLaboratories();
-        if (labs != null) {
-            labObs = FXCollections.observableArrayList(labs);
-            labsTable.setItems(labObs);
+        try {
+            List<Laboratory> labs = laboratoryClient.getLaboratories(userCredentials);
+            if (labs != null) {
+                labObs = FXCollections.observableArrayList(labs);
+                labsTable.setItems(labObs);
+                resetError();
+            }
+        } catch (Exception e) {
+            errorLabel.setText(e.getMessage());
         }
     }
 
@@ -87,6 +99,10 @@ public class LabsViewStudent {
         curriculaTextArea.clear();
         descriptionTextArea.clear();
         datePicker.setValue(LocalDate.now());
+    }
+
+    private void resetError() {
+        errorLabel.setText("");
     }
 
 
@@ -129,9 +145,14 @@ public class LabsViewStudent {
         String keyword = searchTextField.getText();
         if (keyword != null) {
             System.out.println("search button clicked");
-            List<Laboratory> labs = laboratoryClient.getLaboratories(keyword);
-            labObs = FXCollections.observableArrayList(labs);
-            labsTable.setItems(labObs);
+            try {
+                List<Laboratory> labs = laboratoryClient.getLaboratories(keyword, userCredentials);
+                labObs = FXCollections.observableArrayList(labs);
+                labsTable.setItems(labObs);
+                resetError();
+            } catch (Exception e) {
+                errorLabel.setText(e.getMessage());
+            }
         }
     }
 

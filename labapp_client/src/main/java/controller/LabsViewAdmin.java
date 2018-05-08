@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import model.Laboratory;
+import model.UserCredentials;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -66,9 +67,12 @@ public class LabsViewAdmin {
     private LaboratoryClient laboratoryClient;
     private ObservableList<Laboratory> labObs;
 
+    private UserCredentials userCredentials;
 
-    public void initData(ClientProvider clientProvider) {
+
+    public void initData(ClientProvider clientProvider, UserCredentials userCredentials) {
         laboratoryClient = clientProvider.getLaboratoryClient();
+        this.userCredentials = userCredentials;
 
         initializeLabsTable();
         labNumberTextField.setPromptText("Lab number");
@@ -82,10 +86,15 @@ public class LabsViewAdmin {
     }
 
     public void updateTableContents() {
-        List<Laboratory> labs = laboratoryClient.getLaboratories();
-        if (labs != null) {
-            labObs = FXCollections.observableArrayList(labs);
-            labsTable.setItems(labObs);
+        try {
+            List<Laboratory> labs = laboratoryClient.getLaboratories(userCredentials);
+            if (labs != null) {
+                labObs = FXCollections.observableArrayList(labs);
+                labsTable.setItems(labObs);
+                resetError();
+            }
+        } catch (Exception e) {
+            errorLabel.setText(e.getMessage());
         }
     }
 
@@ -145,8 +154,9 @@ public class LabsViewAdmin {
     private void addButtonClicked(ActionEvent event) {
         try {
             Laboratory lab = parseLabFields();
-            laboratoryClient.createLaboratory(lab);
-            labObs.add(lab);
+            laboratoryClient.createLaboratory(lab, userCredentials);
+//            labObs.add(lab);
+            updateTableContents();
             resetError();
         } catch (Exception e) {
             errorLabel.setText(e.getMessage());
@@ -162,10 +172,11 @@ public class LabsViewAdmin {
         }
         else {
             try {
-                labObs.remove(selectedLab);
+
                 Laboratory lab = parseLabFields();
+                labObs.remove(selectedLab);
                 lab.setId(selectedLab.getId());
-                laboratoryClient.updateLaboratory(lab);
+                laboratoryClient.updateLaboratory(lab, userCredentials);
                 labObs.add(lab);
                 resetError();
             } catch (Exception e) {
@@ -181,8 +192,13 @@ public class LabsViewAdmin {
             errorLabel.setText("Must first select a lab from the table!");
         }
         else {
-            laboratoryClient.deleteLaboratory(selectedLab.getId());
-            labObs.remove(selectedLab);
+            try {
+                laboratoryClient.deleteLaboratory(selectedLab.getId(), userCredentials);
+                labObs.remove(selectedLab);
+                resetError();
+            } catch (Exception e) {
+                errorLabel.setText(e.getMessage());
+            }
         }
     }
 
