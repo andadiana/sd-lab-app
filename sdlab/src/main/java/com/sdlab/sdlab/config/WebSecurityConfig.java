@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -11,15 +12,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 @EnableWebSecurity
+//@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder authenticationMgr) throws Exception {
-//        authenticationMgr.inMemoryAuthentication()
-//                .withUser("admin").password("{noop}123").roles("ADMIN")
-//                .and()
-//                .withUser("student").password("{noop}123").roles("STUDENT");
-
         authenticationMgr.authenticationProvider(customAuthenticationProvider);
     }
 
@@ -29,25 +26,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable().httpBasic().and().authorizeRequests()
-                .antMatchers("/students").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/labs").hasAnyRole("ADMIN", "STUDENT")
+        http
+                .csrf().disable()
+                .httpBasic().and().authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/students").hasAnyRole("ADMIN", "STUDENT")
+                .antMatchers(HttpMethod.POST,"/students").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE,"/students").hasRole("ADMIN")
+
                 .antMatchers(HttpMethod.POST, "/labs").hasRole("ADMIN")
-                .antMatchers("/assignments").hasAnyRole("ADMIN", "STUDENT")
+                .antMatchers(HttpMethod.PUT, "/labs/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/labs/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/labs").hasAnyRole("ADMIN", "STUDENT")
+                .antMatchers(HttpMethod.GET,"/assignments").hasAnyRole("ADMIN", "STUDENT")
+                .antMatchers(HttpMethod.POST,"/assignments").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT,"/assignments").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE,"/assignments").hasRole("ADMIN")
                 .antMatchers("/attendance").hasRole("ADMIN")
                 .antMatchers("/submissions").hasAnyRole("ADMIN", "STUDENT")
                 .antMatchers("/login").permitAll()
                 .anyRequest().authenticated()
                 ;
 
-//        http.csrf().disable().httpBasic().and().authorizeRequests()
-//                .antMatchers("/students").permitAll()
-//                .antMatchers("/labs").permitAll()
-//                .antMatchers("/assignments").permitAll()
-//                .antMatchers("/attendance").permitAll()
-//                .antMatchers("/submissions").permitAll()
-//                .antMatchers("/login").permitAll()
-//        ;
     }
 }
 

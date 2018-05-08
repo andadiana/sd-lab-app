@@ -37,7 +37,7 @@ public class LoginController {
                 responseDTO.setPasswordSet(true);
             }
             else {
-                responseDTO.setPasswordSet(true);
+                responseDTO.setPasswordSet(false);
             }
             return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
         } catch (LoginException e) {

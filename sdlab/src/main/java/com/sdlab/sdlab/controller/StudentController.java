@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -92,6 +93,7 @@ public class StudentController {
     }
 
     @RequestMapping(method = PUT, value = "/{studentId}/password")
+    @PreAuthorize("#userId == principal.id")
     public ResponseEntity updatePassword(@PathVariable Integer studentId,
                                          @Validated @RequestBody PasswordUpdateDTO passwordUpdateDTO) {
 
