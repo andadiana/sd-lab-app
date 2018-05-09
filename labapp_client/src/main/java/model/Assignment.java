@@ -1,6 +1,5 @@
 package model;
 
-import java.time.LocalDate;
 import java.sql.Date;
 
 public class Assignment {

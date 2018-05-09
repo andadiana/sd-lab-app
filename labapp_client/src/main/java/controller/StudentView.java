@@ -1,8 +1,6 @@
 package controller;
 
 import client.ClientProvider;
-import client.ClientProviderImpl;
-import com.sun.security.ntlm.Client;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

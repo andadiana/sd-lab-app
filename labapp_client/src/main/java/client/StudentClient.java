@@ -1,7 +1,6 @@
 package client;
 
 import dto.request.PasswordUpdateDTO;
-import dto.response.StudentCreationResponseDTO;
 import model.Student;
 import model.UserCredentials;
 

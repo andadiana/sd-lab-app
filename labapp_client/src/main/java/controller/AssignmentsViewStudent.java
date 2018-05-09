@@ -2,26 +2,15 @@ package controller;
 
 import client.AssignmentClient;
 import client.ClientProvider;
-import client.LaboratoryClient;
-import client.SubmissionClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import model.Assignment;
-import model.Laboratory;
-import model.Submission;
 import model.UserCredentials;
 
-import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;

@@ -1,7 +1,6 @@
 package controller;
 
 import client.ClientProvider;
-import client.ClientProviderImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,11 +9,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import model.Attendance;
 import model.UserCredentials;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class AdminView {
 
